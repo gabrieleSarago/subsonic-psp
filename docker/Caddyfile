@@ -1,0 +1,43 @@
+# ---------------------------------------------------------------------------
+# Reverse proxy and application server, in one process.
+# ---------------------------------------------------------------------------
+# Caddy is here to pass requests to PHP and nothing else. It does not terminate
+# TLS: this application is meant to sit on a home network, where the device
+# reaches it over plain HTTP at the address given by APP_URL.
+#
+# The form of this file is checked during the build, so a mistake in it is
+# caught while the image is assembled rather than when the container starts.
+
+{
+	{$CADDY_GLOBAL_OPTIONS}
+
+	# Without a hostname there is nothing to obtain a certificate for, and
+	# without a certificate to write the server would refuse to start.
+	auto_https off
+
+	log {
+		output stdout
+		format console
+	}
+}
+
+http://:{$APP_PORT} {
+	root * /app/public
+
+	encode zstd br gzip
+
+	# The device asks for the byte range it wants to hear, and the answer
+	# depends on how the music server is serving the file: a track already in
+	# MP3 is sent as it is, while one being converted is streamed without a
+	# length. Nothing here may answer with a range of its own or buffer a body.
+	header {
+		-X-Forwarded-For
+		-Server
+	}
+
+	# The handler runs the application for a request whose path leads to a PHP
+	# file, and serves the few files in the document root that do not. The
+	# files it serves are the ones shipped in the image and never change while
+	# the container is up, so there is nothing to cache them for.
+	php_server
+}

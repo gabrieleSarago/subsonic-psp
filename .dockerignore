@@ -1,0 +1,34 @@
+# Everything that must not take part in the build context.
+#
+# The image is assembled from composer.json and composer.lock plus the
+# application sources, so the local vendor directory, the local cache and the
+# secrets are all left out: none of them belong in a layer.
+
+.git
+.gitignore
+.github
+.agents
+.claude
+.ai
+
+# Secrets and local settings. The entrypoint writes the environment file of the
+# container from the variables it receives, so nothing here is needed inside.
+.env
+.env.*
+
+# Replaced by a stage of its own inside the build.
+vendor
+
+# Written by the entrypoint on first boot.
+storage
+bootstrap/cache/*.php
+
+# Not needed to serve a request.
+tests
+phpunit.xml
+psp_rss_server.pl
+
+# Build files, which describe this image rather than belong in it.
+.dockerignore
+Dockerfile
+docker-compose.yml

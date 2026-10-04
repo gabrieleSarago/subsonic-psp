@@ -1,0 +1,96 @@
+# ---------------------------------------------------------------------------
+# The RSS feeds and the index page for a PlayStation Portable.
+# ---------------------------------------------------------------------------
+# The device is the only client that matters, so the configuration is reduced to
+# what it needs: where the music server is, how to reach this application, and
+# which limits the device imposes.
+#
+# The application is not reached directly. It joins the "proxy" network that
+# Traefik is on, and Traefik publishes it as PSP_HOSTNAME over plain HTTP, which
+# is why the feeds carry an address with no port in it: the device has a TLS
+# stack from 2009 and refuses most certificates issued since, so HTTPS here would
+# produce an error that reads like a broken feed and is not one.
+#
+#     cp .env.docker.example .env      # then fill in the blanks
+#     docker compose up -d --build
+#
+# PSP_HOSTNAME is what the router is asked for and what ends up in the feeds, so
+# the two cannot drift apart. No port is published: Traefik is the way in, and a
+# published port would only offer a second address that has to be kept in step
+# with the first.
+
+services:
+    psp-rss:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: psp-rss:latest
+
+        container_name: psp-rss
+
+        restart: unless-stopped
+
+        environment:
+            # ----------------------------------------------------------------
+            # Where the device reaches this application.
+            # ----------------------------------------------------------------
+            # Derived from the hostname the router is given, so the address in
+            # the feed and the address Traefik answers to are the same by
+            # construction. Behind a proxy the public address carries no port.
+            APP_URL: "http://${PSP_HOSTNAME:-psp-rss.home.lan}"
+            # The port the server listens on inside the container. It is also
+            # the one Traefik is told to route to.
+            APP_PORT: "${APP_PORT:-9000}"
+            APP_NAME: "${APP_NAME:-PSP RSS}"
+
+            # ----------------------------------------------------------------
+            # Navidrome.
+            # ----------------------------------------------------------------
+            SUBSONIC_HOST: "${SUBSONIC_HOST:?SUBSONIC_HOST mancante, per esempio http://navidrome.home.lan}"
+            SUBSONIC_USERNAME: "${SUBSONIC_USERNAME:?SUBSONIC_USERNAME mancante}"
+            SUBSONIC_PASSWORD: "${SUBSONIC_PASSWORD:?SUBSONIC_PASSWORD mancante}"
+
+            # ----------------------------------------------------------------
+            # Device limits.
+            # ----------------------------------------------------------------
+            # 128 kbps is a fair compromise: a track of a few minutes becomes a
+            # few megabytes, which the device can hold and stream.
+            SUBSONIC_PSP_BITRATE: "${SUBSONIC_PSP_BITRATE:-128}"
+
+            # The device stops reading a feed after about a hundred entries, so
+            # longer collections are served as a sequence of feeds.
+            PSP_FEED_PAGE_SIZE: "${PSP_FEED_PAGE_SIZE:-100}"
+
+        # Traefik finds the containers it fronts through these labels, and routes
+        # to the port the server listens on *inside* the container: APP_PORT.
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.psp-rss.rule=Host(`${PSP_HOSTNAME:-psp-rss.home.lan}`)"
+            - "traefik.http.routers.psp-rss.entrypoints=web"
+            - "traefik.http.services.psp-rss.loadbalancer.server.port=${APP_PORT:-9000}"
+
+        networks:
+            # Created by the Traefik stack, which compose must not touch.
+            - proxy
+
+        # The cache is written to disk. It holds the album and playlist lists,
+        # which are small, but nothing else: the audio is never stored here.
+        volumes:
+            - cache:/app/storage/framework/cache/data
+
+        # No healthcheck of its own: the image declares one, so the container is
+        # reported as unhealthy if the application stops answering even though it
+        # is still running.
+        #
+        # Note that the check does not cover Navidrome. The music server may be
+        # restarted independently, and a container restart would not fix that,
+        # so the application is expected to answer with an error while it is
+        # away rather than to go down with it.
+
+networks:
+    proxy:
+        external: true
+        name: proxy
+
+volumes:
+    cache:
