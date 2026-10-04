@@ -25,28 +25,28 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <atom:link href="{{ url($meta['link']) }}" rel="self" type="application/rss+xml" />
-        <title>{!! \Spatie\Feed\Helpers\Cdata::out($meta['title']) !!}</title>
+        <title>{{ $meta['title'] }}</title>
         <link>{{ url($meta['link']) }}</link>
-        <description>{!! \Spatie\Feed\Helpers\Cdata::out($meta['description']) !!}</description>
+        <description>{{ $meta['description'] }}</description>
         <language>{{ $meta['language'] }}</language>
         <generator>Laravel</generator>
         <lastBuildDate>{{ \App\Support\RssDate::rfc822($channelUpdated) }}</lastBuildDate>
 @if (($meta['image'] ?? '') !== '')
         <image>
             <url>{{ $meta['image'] }}</url>
-            <title>{!! \Spatie\Feed\Helpers\Cdata::out($meta['title']) !!}</title>
+            <title>{{ $meta['title'] }}</title>
             <link>{{ url($meta['link']) }}</link>
         </image>
 @endif
 @foreach ($items as $item)
         <item>
-            <title>{!! \Spatie\Feed\Helpers\Cdata::out($item->title ?? '') !!}</title>
+            <title>{{ $item->title ?? '' }}</title>
             <link>{{ $item->link ?? '' }}</link>
             <guid isPermaLink="false">{{ $item->id ?? '' }}</guid>
-            <description>{!! \Spatie\Feed\Helpers\Cdata::out($item->summary ?? '') !!}</description>
+            <description>{{ $item->summary ?? '' }}</description>
             <pubDate>{{ \App\Support\RssDate::rfc822($item->updated ?? $channelUpdated) }}</pubDate>
 @if (($item->authorName ?? '') !== '')
-            <author>{!! \Spatie\Feed\Helpers\Cdata::out($item->authorName) !!}</author>
+            <author>{{ $item->authorName }}</author>
 @endif
 @foreach (($item->category ?? []) as $category)
             <category>{{ $category }}</category>
