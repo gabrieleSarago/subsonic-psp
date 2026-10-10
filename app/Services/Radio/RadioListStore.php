@@ -52,6 +52,22 @@ final class RadioListStore
 
         $temporary = $this->path.'.'.bin2hex(random_bytes(4)).'.tmp';
         File::put($temporary, $json);
+
+        // The list is a bind mount, so the account that edits it on the host and
+        // the one the server runs as are usually different. The replacement
+        // keeps the group of the file it replaces and stays group writable, so
+        // a probe run inside the container leaves a file that is still editable
+        // on the host instead of one only the container can change.
+        if (is_file($this->path)) {
+            $group = @filegroup($this->path);
+
+            if ($group !== false) {
+                @chgrp($temporary, $group);
+            }
+        }
+
+        @chmod($temporary, 0664);
+
         File::move($temporary, $this->path);
     }
 }

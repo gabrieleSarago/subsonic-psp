@@ -2,22 +2,34 @@
     {
         "id": "radio-italia-solo-musica-italiana",
         "name": "Radio Italia Solo Musica Italiana",
-        "streamUrl": "https://radioitaliasmi.akamaized.net/hls/live/2093120/RISMI/stream01/streamPlaylist.m3u8"
+        "tagline": "italian pop",
+        "streamUrl": "https://radioitaliasmi.akamaized.net/hls/live/2093120/RISMI/stream01/streamPlaylist.m3u8",
+        "resolvedUrl": "https://radioitaliasmi.akamaized.net/hls/live/2093120/RISMI/stream01/streamPlaylist.m3u8",
+        "favicon": "https://www.radioitalia.it/images/logo-radioitalia.png"
     },
     {
         "id": "radio-kiss-kiss",
         "name": "Radio Kiss Kiss",
-        "streamUrl": "http://wma07.fluidstream.net:4610/"
+        "tagline": "Varied",
+        "streamUrl": "http://wma07.fluidstream.net:4610/",
+        "resolvedUrl": "http://kisskiss.fluidstream.eu/KissKiss.mp3",
+        "favicon": "https://kisskiss.it/wp-content/uploads/2022/07/cropped-favicon-new-kisskiss-32x32.png"
     },
     {
         "id": "radio-24-il-sole-24-ore",
         "name": "Radio 24 il sole 24 ore",
-        "streamUrl": "http://shoutcast2.radio24.it:8000/;"
+        "tagline": "talk",
+        "streamUrl": "http://shoutcast2.radio24.it:8000/;",
+        "resolvedUrl": "http://shoutcast2.radio24.it:8000/;",
+        "favicon": "https://www.radio24.ilsole24ore.com/whitelabel/group-2420101401040528/img/apple-touch-icon.png"
     },
     {
         "id": "radio-deejay",
         "name": "Radio Deejay",
-        "streamUrl": "https://4c4b867c89244861ac216426883d1ad0.msvdn.net/radiodeejay/radiodeejay/master_ma.m3u8"
+        "tagline": "italian,news,pop,talk",
+        "streamUrl": "https://4c4b867c89244861ac216426883d1ad0.msvdn.net/radiodeejay/radiodeejay/master_ma.m3u8",
+        "resolvedUrl": "https://streamcdng20-4c4b867c89244861ac216426883d1ad0.msvdn.net/radiodeejay/radiodeejay/master_ma.m3u8",
+        "favicon": "https://www.deejay.it/favicon.ico"
     },
     {
         "id": "rai-radio-1",
@@ -27,152 +39,234 @@
     {
         "id": "rtl-102-5",
         "name": "RTL 102.5",
-        "streamUrl": "https://dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S97044836/tbbP8T1ZRPBL/playlist_audio.m3u8"
+        "tagline": "local,news,varied",
+        "streamUrl": "https://dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S97044836/tbbP8T1ZRPBL/playlist_audio.m3u8",
+        "resolvedUrl": "https://streamcdnm1-dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S97044836/tbbP8T1ZRPBL/playlist_audio.m3u8",
+        "favicon": "https://cloud.rtl.it/assets/www.rtl.it/3.0.64/img/logo/favicon-96x96.png"
     },
     {
         "id": "radio-105-network",
         "name": "Radio 105 Network",
-        "streamUrl": "http://icecast.unitedradio.it/Radio105.mp3"
+        "tagline": "Various",
+        "streamUrl": "http://icecast.unitedradio.it/Radio105.mp3",
+        "resolvedUrl": "http://icecast.unitedradio.it/Radio105.mp3",
+        "favicon": "https://upload.wikimedia.org/wikipedia/it/0/01/105.png"
     },
     {
         "id": "radio-ibiza",
         "name": "Radio Ibiza",
-        "streamUrl": "http://wma08.fluidstream.net:5010/;stream.aac"
+        "tagline": "Dance Station",
+        "streamUrl": "http://wma08.fluidstream.net:5010/;stream.aac",
+        "resolvedUrl": "https://kisskiss.fluidstream.eu/ibiza.mp3",
+        "favicon": "https://radioibiza.it/wp-content/uploads/2021/07/cropped-favicon-ibiza-32x32.png"
     },
     {
         "id": "virgin-radio-italia",
         "name": "Virgin Radio Italia",
-        "streamUrl": "http://icecast.unitedradio.it/Virgin.mp3"
+        "tagline": "Rock",
+        "streamUrl": "http://icecast.unitedradio.it/Virgin.mp3",
+        "resolvedUrl": "http://icecast.unitedradio.it/Virgin.mp3",
+        "favicon": "http://www.virginradio.it/favicon_2.ico?v=1722509813651"
     },
     {
         "id": "rai-radio-3",
         "name": "Rai Radio 3",
-        "streamUrl": "http://icestreaming.rai.it/3.mp3"
+        "tagline": "classical,culture,public radio,rai",
+        "streamUrl": "http://icestreaming.rai.it/3.mp3",
+        "resolvedUrl": "http://icecdn-19d24861e90342cc8decb03c24c8a419.msvdn.net/icecastRelay/S56630579/yEbkcBtIoSwd/icecast"
     },
     {
         "id": "70-80-90",
         "name": "70 80 90",
-        "streamUrl": "https://rblive.it:8170/radio.mp3"
+        "streamUrl": "https://rblive.it:8170/radio.mp3",
+        "resolvedUrl": "https://rblive.it:8170/radio.mp3"
     },
     {
         "id": "radio-armisa",
         "name": "Radio Armisa",
-        "streamUrl": "https://onair.armisa.it/listen/armisa/radio.mp3"
+        "tagline": "anni 80,anni 90,balera,dance,folk,italiana,liscio,oldies,pop,popolare,tradizione",
+        "streamUrl": "https://onair.armisa.it/listen/armisa/radio.mp3",
+        "resolvedUrl": "https://onair.armisa.it/listen/armisa/radio.mp3",
+        "favicon": "https://armisa.it/favicon.ico"
     },
     {
         "id": "deejay-80",
         "name": "Deejay 80",
-        "streamUrl": "https://4c4b867c89244861ac216426883d1ad0.msvdn.net/webradio/deejay80/playlist.m3u8"
+        "tagline": "1980s,80 hits,80's,80s,80s rock,hits 80s,the best of 80's",
+        "streamUrl": "https://4c4b867c89244861ac216426883d1ad0.msvdn.net/webradio/deejay80/playlist.m3u8",
+        "resolvedUrl": "https://streamcdnr20-4c4b867c89244861ac216426883d1ad0.msvdn.net/webradio/deejay80/playlist.m3u8",
+        "favicon": "https://www.deejay.it/favicon.ico"
     },
     {
         "id": "rmc-radio-monte-carlo",
         "name": "RMC Radio Monte Carlo",
-        "streamUrl": "http://icecast.unitedradio.it/RMC.mp3"
+        "tagline": "Various",
+        "streamUrl": "http://icecast.unitedradio.it/RMC.mp3",
+        "resolvedUrl": "http://icecast.unitedradio.it/RMC.mp3"
     },
     {
         "id": "rds-relax",
         "name": "RDS relax",
-        "streamUrl": "http://icstream.rds.radio/rdsrelax"
+        "tagline": "Relax",
+        "streamUrl": "http://icstream.rds.radio/rdsrelax",
+        "resolvedUrl": "http://icstream.rds.radio/rdsrelax",
+        "favicon": "https://rdsrelax.it/images/logo.png"
     },
     {
         "id": "classic-hits-radio-italia",
         "name": "CLASSIC HITS RADIO Italia",
-        "streamUrl": "https://classichitsradio.streamingmedia.it/play"
+        "tagline": "70-80 non stop e senza pubblicità",
+        "streamUrl": "https://classichitsradio.streamingmedia.it/play",
+        "resolvedUrl": "https://classichitsradio.streamingmedia.it/play",
+        "favicon": "https://www.classichits.radio/favicon.ico"
     },
     {
         "id": "radio-sportiva",
         "name": "Radio Sportiva",
-        "streamUrl": "https://sportiva.inmystream.it/stream/sportiva"
+        "tagline": "DEVAIceSender 1.1",
+        "streamUrl": "https://sportiva.inmystream.it/stream/sportiva",
+        "resolvedUrl": "https://sportiva.inmystream.it/stream/sportiva",
+        "favicon": "https://www.radiosportiva.com/wp-content/uploads/2021/09/logo-radiosportiva-white.svg"
     },
     {
         "id": "radio-m2o",
         "name": "Radio M2O",
-        "streamUrl": "https://4c4b867c89244861ac216426883d1ad0.msvdn.net/radiom2o/radiom2o/master_ma.m3u8"
+        "streamUrl": "https://4c4b867c89244861ac216426883d1ad0.msvdn.net/radiom2o/radiom2o/master_ma.m3u8",
+        "resolvedUrl": "https://streamcdnr13-4c4b867c89244861ac216426883d1ad0.msvdn.net/radiom2o/radiom2o/master_ma.m3u8"
     },
     {
         "id": "radio-kiss-kiss-italia",
         "name": "Radio Kiss Kiss Italia",
-        "streamUrl": "http://wma06.fluidstream.net:3614/;listen.pls"
+        "tagline": "Tutta musica italiana",
+        "streamUrl": "http://wma06.fluidstream.net:3614/;listen.pls",
+        "resolvedUrl": "https://kisskiss.fluidstream.eu/KKItalia.mp3",
+        "favicon": "https://kisskissitalia.it/wp-content/uploads/2021/07/cropped-favicon-kisskissitalia-32x32.png"
     },
     {
         "id": "funky-radio-only-funk-music-60-s-70-s",
         "name": "FUNKY RADIO - Only Funk Music (60's 70's)",
-        "streamUrl": "https://funkyradio.streamingmedia.it/play.mp3"
+        "tagline": "Only Funk Music 60s70s80s",
+        "streamUrl": "https://funkyradio.streamingmedia.it/play.mp3",
+        "resolvedUrl": "https://funkyradio.streamingmedia.it/play.mp3",
+        "favicon": "https://funky.radio/wp-content/uploads/2023/10/funky-radio-favicon-512-100x100.png"
     },
     {
         "id": "radio-80",
         "name": "Radio 80",
-        "streamUrl": "http://str01.fluidstream.net:7020/;stream.mp3"
+        "tagline": "80",
+        "streamUrl": "http://str01.fluidstream.net:7020/;stream.mp3",
+        "resolvedUrl": "https://sphera.fluidstream.eu/radio80.mp3",
+        "favicon": "https://www.radio80.it/wp-content/uploads/2025/06/cropped-radio-80-sito-32x32.png"
     },
     {
         "id": "r101-fm",
         "name": "R101 FM",
-        "streamUrl": "http://icecast.unitedradio.it/r101"
+        "tagline": "Various",
+        "streamUrl": "http://icecast.unitedradio.it/r101",
+        "resolvedUrl": "http://icecast.unitedradio.it/r101",
+        "favicon": "http://www.r101.it/favicon_7.ico?v=1722509814243"
     },
     {
         "id": "radio-piterpan",
         "name": "Radio Piterpan",
-        "streamUrl": "http://wma01.fluidstream.net/piterpan"
+        "tagline": "Dance",
+        "streamUrl": "http://wma01.fluidstream.net/piterpan",
+        "resolvedUrl": "http://wma01.fluidstream.net/piterpan",
+        "favicon": "http://www.piterpan.it/favicon.ico"
     },
     {
         "id": "virgin-radio-classic-rock",
         "name": "Virgin Radio Classic Rock",
-        "streamUrl": "http://icy.unitedradio.it/VirginRockClassics.mp3"
+        "tagline": "Rock",
+        "streamUrl": "http://icy.unitedradio.it/VirginRockClassics.mp3",
+        "resolvedUrl": "http://icy.unitedradio.it/VirginRockClassics.mp3"
     },
     {
         "id": "rtl-102-5-disco",
         "name": "RTL 102.5 Disco",
-        "streamUrl": "https://dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S51100361/Sz3kCA55PrRh/playlist_audio.m3u8"
+        "tagline": "club,dance,electronic dance music,eurodance,house",
+        "streamUrl": "https://dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S51100361/Sz3kCA55PrRh/playlist_audio.m3u8",
+        "resolvedUrl": "https://streamcdnr12-dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S51100361/Sz3kCA55PrRh/playlist_audio.m3u8",
+        "favicon": "https://cloud.rtl.it/assets/www.rtl.it/3.0.64/img/logo/favicon-96x96.png"
     },
     {
         "id": "radio-kiss-kiss-napoli",
         "name": "Radio Kiss Kiss Napoli",
-        "streamUrl": "http://wma08.fluidstream.net:3612/;listen.pls"
+        "tagline": "La radio della citta'",
+        "streamUrl": "http://wma08.fluidstream.net:3612/;listen.pls",
+        "resolvedUrl": "https://kisskiss.fluidstream.eu/KKNapoli.mp3",
+        "favicon": "https://kisskissnapoli.it/wp-content/uploads/2022/03/cropped-cropped-logo-kisskiss-napoli-32x32.png"
     },
     {
         "id": "m2o-originals-radio",
         "name": "m2o originals radio",
-        "streamUrl": "https://stream.laut.fm/m2o-originals-radio"
+        "tagline": "musica allo stato puro.",
+        "streamUrl": "https://stream.laut.fm/m2o-originals-radio",
+        "resolvedUrl": "https://m2o-originals-radio.stream.laut.fm/m2o-originals-radio?t302=2026-10-10_21-33-32&uuid=0ac3d8e0-4ca2-d432-7d89-ae9a9e786418",
+        "favicon": "http://laut.fm/favicon.ico"
     },
     {
         "id": "radio-freccia",
         "name": "Radio Freccia",
-        "streamUrl": "https://dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S3160845/0tuSetc8UFkF/playlist_audio.m3u8"
+        "tagline": "classic rock,oldies,rock",
+        "streamUrl": "https://dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S3160845/0tuSetc8UFkF/playlist_audio.m3u8",
+        "resolvedUrl": "https://streamcdng14-dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S3160845/0tuSetc8UFkF/playlist_audio.m3u8",
+        "favicon": "https://cloud.radiofreccia.it/assets/www.radiofreccia.it/1.0.43/img/logo/android-icon-192x192.png"
     },
     {
         "id": "radio-dimensione-relax",
         "name": "RADIO DIMENSIONE RELAX",
-        "streamUrl": "https://az1.mediacp.eu/listen/radiodimensionerelax/radio.mp3"
+        "tagline": "Ambient",
+        "streamUrl": "https://az1.mediacp.eu/listen/radiodimensionerelax/radio.mp3",
+        "resolvedUrl": "https://az1.mediacp.eu/listen/radiodimensionerelax/radio.mp3",
+        "favicon": "https://rdastation.it/favicon.ico"
     },
     {
         "id": "virgin-radio-italy",
         "name": "Virgin Radio Italy",
-        "streamUrl": "https://icy.unitedradio.it/Virgin.mp3"
+        "tagline": "Rock",
+        "streamUrl": "https://icy.unitedradio.it/Virgin.mp3",
+        "resolvedUrl": "https://icy.unitedradio.it/Virgin.mp3",
+        "favicon": "https://www.virginradio.it/wp-content/themes/virgin-radio-theme/public/images/VRG-symbol-footer.066739.png"
     },
     {
         "id": "radio-bruno-made-in-italy",
         "name": "Radio Bruno - Made in Italy",
-        "streamUrl": "https://stream2.xdevel.com/audio1s975355-54/stream/icecast.audio"
+        "tagline": "Misc",
+        "streamUrl": "https://stream2.xdevel.com/audio1s975355-54/stream/icecast.audio",
+        "resolvedUrl": "https://stream2.xdevel.com/audio1s975355-54/stream/icecast.audio",
+        "favicon": "https://www.radiobruno.it/wp-content/uploads/2019/11/made-in-italy.jpg"
     },
     {
         "id": "nature-radio-sleep",
         "name": "NATURE RADIO SLEEP",
-        "streamUrl": "https://az1.mediacp.eu/listen/natureradiosleep/radio.mp3"
+        "tagline": "Ambient",
+        "streamUrl": "https://az1.mediacp.eu/listen/natureradiosleep/radio.mp3",
+        "resolvedUrl": "https://az1.mediacp.eu/listen/natureradiosleep/radio.mp3",
+        "favicon": "https://natureradiosleep.weebly.com/favicon.ico"
     },
     {
         "id": "radio-popolare",
         "name": "Radio Popolare",
-        "streamUrl": "http://livex.radiopopolare.it/radiopop"
+        "tagline": "Informazione libera e indipendente",
+        "streamUrl": "http://livex.radiopopolare.it/radiopop",
+        "resolvedUrl": "http://livex.radiopopolare.it/radiopop"
     },
     {
         "id": "romantica-radio-romanticaradio-web",
         "name": "Romantica Radio (RomanticaRadio Web)",
-        "streamUrl": "https://vetrina.multi-radio.com/romanticaradio"
+        "tagline": "Oldies",
+        "streamUrl": "https://vetrina.multi-radio.com/romanticaradio",
+        "resolvedUrl": "https://vetrina.multi-radio.com/romanticaradio",
+        "favicon": "https://romanticaradio.it/wp-content/uploads/2022/05/cropped-favicon_romantica-180x180.png"
     },
     {
         "id": "radio-birikina",
         "name": "Radio Birikina",
-        "streamUrl": "http://wma01.fluidstream.net/birikina"
+        "tagline": "Pop",
+        "streamUrl": "http://wma01.fluidstream.net/birikina",
+        "resolvedUrl": "http://wma01.fluidstream.net/birikina",
+        "favicon": "https://www.birikina.it/wp-content/uploads/2020/02/ico-fb-1.png"
     },
     {
         "id": "rai-news-24",
@@ -182,71 +276,106 @@
     {
         "id": "neu-radio",
         "name": "NEU RADIO",
-        "streamUrl": "https://nr9.newradio.it/proxy/ebaruffa?mp=/stream"
+        "tagline": "Alternative",
+        "streamUrl": "https://nr9.newradio.it/proxy/ebaruffa?mp=/stream",
+        "resolvedUrl": "https://nr9.newradio.it/proxy/ebaruffa?mp=/stream",
+        "favicon": "https://neuradio.it/wp-content/uploads/2024/04/cropped-favicon_black-32x32.png"
     },
     {
         "id": "babboleo-suono",
         "name": "Babboleo Suono",
-        "streamUrl": "https://stream.rcs.revma.com/sv2hu8qqv6bwv"
+        "tagline": "1960s,1970s,1980s,classic hits,goldies",
+        "streamUrl": "https://stream.rcs.revma.com/sv2hu8qqv6bwv",
+        "resolvedUrl": "https://n19-eu.rcs.revma.com/sv2hu8qqv6bwv?rj-ttl=5&rj-tok=AAABoSdX-Z4AbMMP85RPa7GeKg"
     },
     {
         "id": "radio-capital",
         "name": "Radio Capital",
-        "streamUrl": "https://4c4b867c89244861ac216426883d1ad0.msvdn.net/radiocapital/radiocapital/master_ma.m3u8"
+        "streamUrl": "https://4c4b867c89244861ac216426883d1ad0.msvdn.net/radiocapital/radiocapital/master_ma.m3u8",
+        "resolvedUrl": "https://streamcdng15-4c4b867c89244861ac216426883d1ad0.msvdn.net/radiocapital/radiocapital/master_ma.m3u8",
+        "favicon": "https://www.capital.it/wp-content/themes/network-capital/favicon.ico"
     },
     {
         "id": "lattemiele",
         "name": "Lattemiele",
-        "streamUrl": "https://sr15.inmystream.it:8000/stream"
+        "tagline": "POP",
+        "streamUrl": "https://sr15.inmystream.it:8000/stream",
+        "resolvedUrl": "https://sr15.inmystream.it:8000/stream",
+        "favicon": "https://www.lattemiele.com/wp-content/uploads/2020/07/cropped-logo-autore-lm-32x32.png"
     },
     {
         "id": "radio-volami-nel-cuore",
         "name": "Radio Volami nel Cuore",
-        "streamUrl": "https://rci.canaleitalia.tv:8009/;"
+        "tagline": "60's,60s,70's,70s,80's,80s,90's,90s,classic hits,classic rock,contemporary hits,greatest hits,international,italian pop,love songs,non stop,non-stop music,pop,rock,singer-songwriter,top hits",
+        "streamUrl": "https://rci.canaleitalia.tv:8009/;",
+        "resolvedUrl": "https://rci.canaleitalia.tv:8009/;",
+        "favicon": "https://canaleitalia.it/wp-content/uploads/2021/08/cropped-italia-pubblicita-favicon-32x32.png"
     },
     {
         "id": "70-80-hits-hq",
         "name": "70 80 Hits HQ",
-        "streamUrl": "https://nr8.newradio.it:19574/stream"
+        "tagline": "pop music",
+        "streamUrl": "https://nr8.newradio.it:19574/stream",
+        "resolvedUrl": "https://nr8.newradio.it:19574/stream",
+        "favicon": "https://cdn-profiles.tunein.com/s267625/images/logog.jpg?t=159500"
     },
     {
         "id": "radio-radicale",
         "name": "Radio Radicale",
-        "streamUrl": "http://live.radioradicale.it/live.mp3"
+        "tagline": "politics,talk",
+        "streamUrl": "http://live.radioradicale.it/live.mp3",
+        "resolvedUrl": "http://live.radioradicale.it/live.mp3"
     },
     {
         "id": "jazz-radio-swiss",
         "name": "Jazz | Radio Swiss",
-        "streamUrl": "https://stream.srg-ssr.ch/m/rsj/mp3_128"
+        "tagline": "jazz,mp3,radio swiss",
+        "streamUrl": "https://stream.srg-ssr.ch/m/rsj/mp3_128",
+        "resolvedUrl": "http://livestreaming-node-3.srg-ssr.ch/srgssr/rsj/mp3/128",
+        "favicon": "https://www.radioswissjazz.ch/social-media/rsj-web.png"
     },
     {
         "id": "radio-maria",
         "name": "Radio Maria",
-        "streamUrl": "http://dreamsiteradiocp.com:8092/;"
+        "tagline": "Talk",
+        "streamUrl": "http://dreamsiteradiocp.com:8092/;",
+        "resolvedUrl": "http://dreamsiteradiocp.com:8092/;"
     },
     {
         "id": "radio-swiss-classic",
         "name": "Radio Swiss Classic",
-        "streamUrl": "http://stream.srg-ssr.ch/m/rsc_it/mp3_128"
+        "tagline": "classical,public radio,srg ssr",
+        "streamUrl": "http://stream.srg-ssr.ch/m/rsc_it/mp3_128",
+        "resolvedUrl": "http://livestreaming-node-4.srg-ssr.ch/srgssr/rsc_it/mp3/128"
     },
     {
         "id": "mc2-caf-e-del-mar-collection",
         "name": "MC2 Cafè Del Mar Collection",
-        "streamUrl": "https://n13a-eu.rcs.revma.com/a2n83wxayk3vv?rj-ttl=5&rj-tok=AAABndIfXksAiTXrqw2SmfAauA"
+        "tagline": "ambient,balearic lounge,chill house,chill out",
+        "streamUrl": "https://n13a-eu.rcs.revma.com/a2n83wxayk3vv?rj-ttl=5&rj-tok=AAABndIfXksAiTXrqw2SmfAauA",
+        "resolvedUrl": "https://n25-eu.rcs.revma.com/a2n83wxayk3vv?rj-ttl=5&rj-tok=AAABoSdYLlEACadPx8rbZ02Msg",
+        "favicon": "https://www.rmc2.net/wp-content/uploads/2020/08/08_CdM_1200px.jpg"
     },
     {
         "id": "r101-enjoy-the-music",
         "name": "R101 Enjoy The Music",
-        "streamUrl": "http://icy.unitedradio.it/101Legend.aac"
+        "tagline": "Various",
+        "streamUrl": "http://icy.unitedradio.it/101Legend.aac",
+        "resolvedUrl": "http://icy.unitedradio.it/101Legend.aac"
     },
     {
         "id": "radio-maril-u",
         "name": "Radio Marilù",
-        "streamUrl": "http://wma01.fluidstream.net/marilu"
+        "tagline": "Rock",
+        "streamUrl": "http://wma01.fluidstream.net/marilu",
+        "resolvedUrl": "http://wma01.fluidstream.net/marilu",
+        "favicon": "https://www.marilu.it/wp-content/uploads/2023/03/cropped-radio-marilu-plettro-180x180.png"
     },
     {
         "id": "rai-radio-classica-filodiffusione",
         "name": "Rai Radio Classica Filodiffusione",
-        "streamUrl": "http://icestreaming.rai.it/5.mp3"
+        "tagline": "classical,classical music,rai",
+        "streamUrl": "http://icestreaming.rai.it/5.mp3",
+        "resolvedUrl": "http://icecdn-19d24861e90342cc8decb03c24c8a419.msvdn.net/icecastRelay/S53422322/bTdUFhYMnnra/icecast"
     }
 ]
