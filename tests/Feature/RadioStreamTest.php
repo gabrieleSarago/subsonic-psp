@@ -20,10 +20,27 @@ it('streams a station as mp3', function (): void {
     // before it plays anything, so the stream declares the finite amount of
     // audio it will carry instead of leaving the size unknown.
     expect($response->headers->get('Content-Length'))->toBe('57600000')
-        ->and($response->headers->has('Accept-Ranges'))->toBeFalse()
+        ->and($response->headers->get('Accept-Ranges'))->toBe('bytes')
         ->and($response->streamedContent())->toBe('ID3-streamed-bytes')
         ->and($runner->stations)->toHaveCount(1)
         ->and($runner->stations[0]->playableUrl())->toBe('http://stream.test/rmc');
+});
+
+it('answers the tail range the device probes before playing', function (): void {
+    Radios::file([['id' => 'rmc', 'name' => 'RMC', 'streamUrl' => 'http://stream.test/rmc']]);
+    config(['radios.stream_max_bytes' => 20480]);
+
+    $this->app->instance(StreamProcessRunner::class, new FakeStreamProcessRunner(FakeStreamProcess::emitting(str_repeat('M', 100000))));
+
+    // The device reads the last ten kilobytes of the file before it starts, the
+    // same way it reads a track on a memory stick.
+    $response = $this->get('/radios/rmc/stream', ['Range' => 'bytes=10240-']);
+
+    $response->assertStatus(206);
+    $response->assertHeader('Content-Range', 'bytes 10240-20479/20480');
+    $response->assertHeader('Content-Length', '10240');
+
+    expect($response->streamedContent())->toBe(str_repeat('M', 10240));
 });
 
 it('stops at the declared length so the stream ends like a file', function (): void {
@@ -51,6 +68,7 @@ it('answers a size probe without starting a transcode', function (): void {
     $response->assertOk();
     $response->assertHeader('Content-Type', 'audio/mpeg');
     $response->assertHeader('Content-Length', '5000');
+    $response->assertHeader('Accept-Ranges', 'bytes');
 
     expect($runner->stations)->toHaveCount(0);
 });

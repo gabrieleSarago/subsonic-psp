@@ -35,9 +35,10 @@ class RadioStreamController extends Controller
             return new Response('', Response::HTTP_OK, [
                 'Content-Type' => 'audio/mpeg',
                 'Content-Length' => (string) $this->radio->declaredLength(),
+                'Accept-Ranges' => 'bytes',
             ]);
         }
 
-        return $this->radio->stream($request->stationId());
+        return $this->radio->stream($request->stationId(), $request->rangeHeader());
     }
 }

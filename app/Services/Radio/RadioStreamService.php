@@ -5,6 +5,7 @@ namespace App\Services\Radio;
 use App\Data\Radio\Station;
 use App\Exceptions\RadioStreamException;
 use App\Repositories\Contracts\RadioStationRepository;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
@@ -14,13 +15,15 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  * copied to the client in chunks, so one listener is one small process instead
  * of one file in memory.
  *
- * The device treats whatever an enclosure points at as a music file: it reads
- * the length first, then plays the bytes as they arrive, and it can seek within
- * them like a track on a memory stick. A live stream has no end, so the answer
- * declares one: the stream carries at most a configurable amount of audio (an
- * hour at the transcode bitrate) and then stops, so the device sees a finite
- * file it knows how to play. Playback ends when that much audio has been
- * delivered, or sooner when the listener stops it.
+ * The device treats whatever an enclosure points at as a music file. Before it
+ * plays anything it asks for the size with a HEAD, then reads the tail of the
+ * stream with a byte range, exactly as it would with a track on a memory stick.
+ * A live stream has neither an end nor a tail, so the answer declares a finite
+ * length and honours a range: a range that starts at the beginning is served as
+ * it arrives, and the tail the device probes for is answered from the start of
+ * the same audio, which is all a probe needs to recognise an MP3. Playback
+ * carries at most a configurable amount of audio (an hour at the transcode
+ * bitrate) and then stops, so the device always sees a file it can read.
  */
 final class RadioStreamService
 {
@@ -47,7 +50,7 @@ final class RadioStreamService
      * @throws RadioStreamException when the station is gone or its stream
      *                              produces no audio.
      */
-    public function stream(string $stationId): StreamedResponse
+    public function stream(string $stationId, ?string $rangeHeader = null): StreamedResponse
     {
         $station = $this->stations->find($stationId);
 
@@ -67,7 +70,58 @@ final class RadioStreamService
             );
         }
 
-        return $this->toStreamedResponse($process, $firstChunk);
+        return $this->toStreamedResponse($process, $firstChunk, $this->resolveRange($rangeHeader));
+    }
+
+    /**
+     * Work out the status, the content range and the number of bytes to send
+     * for the range the device asked for.
+     *
+     * A range that starts past the beginning of the stream is the tail probe
+     * the device makes before playing: it is answered with a 206 carrying the
+     * same amount of audio, taken from the start of the live transcoding, which
+     * is an MP3 the device recognises.
+     *
+     * @return array{status: int, contentRange: ?string, length: int}
+     */
+    private function resolveRange(?string $rangeHeader): array
+    {
+        $total = $this->maxStreamBytes;
+        $header = trim((string) $rangeHeader);
+
+        // A suffix range asks for the last N bytes, which is another shape the
+        // tail probe may take.
+        if (preg_match('/^bytes=-(\d+)$/', $header, $matches) === 1) {
+            $suffix = min((int) $matches[1], $total);
+
+            if ($suffix > 0) {
+                return [
+                    'status' => Response::HTTP_PARTIAL_CONTENT,
+                    'contentRange' => 'bytes '.($total - $suffix).'-'.($total - 1).'/'.$total,
+                    'length' => $suffix,
+                ];
+            }
+        }
+
+        if (preg_match('/^bytes=(\d+)-(\d*)$/', $header, $matches) === 1) {
+            $start = (int) $matches[1];
+            $end = $matches[2] !== '' ? (int) $matches[2] : $total - 1;
+            $end = min($end, $total - 1);
+
+            if ($start <= $end && $start < $total) {
+                return [
+                    'status' => Response::HTTP_PARTIAL_CONTENT,
+                    'contentRange' => 'bytes '.$start.'-'.$end.'/'.$total,
+                    'length' => $end - $start + 1,
+                ];
+            }
+        }
+
+        return [
+            'status' => Response::HTTP_OK,
+            'contentRange' => null,
+            'length' => $total,
+        ];
     }
 
     /**
@@ -115,22 +169,25 @@ final class RadioStreamService
     }
 
     /**
-     * Copy the transcoded bytes to the client, up to the declared length.
+     * Copy the transcoded bytes to the client, up to the amount the range asks
+     * for.
+     *
+     * @param  array{status: int, contentRange: ?string, length: int}  $range
      */
-    private function toStreamedResponse(StreamProcess $process, string $firstChunk): StreamedResponse
+    private function toStreamedResponse(StreamProcess $process, string $firstChunk, array $range): StreamedResponse
     {
         $chunkSize = $this->chunkSize;
-        $maxBytes = $this->maxStreamBytes;
+        $length = $range['length'];
 
-        $response = new StreamedResponse(function () use ($process, $firstChunk, $chunkSize, $maxBytes): void {
+        $response = new StreamedResponse(function () use ($process, $firstChunk, $chunkSize, $length): void {
             ignore_user_abort(true);
 
             $sent = 0;
 
             try {
-                $sent += $this->emit($firstChunk, $sent, $maxBytes);
+                $sent += $this->emit($firstChunk, $sent, $length);
 
-                while ($sent < $maxBytes) {
+                while ($sent < $length) {
                     if (connection_aborted() !== 0) {
                         break;
                     }
@@ -155,7 +212,7 @@ final class RadioStreamService
                         break;
                     }
 
-                    $sent += $this->emit($chunk, $sent, $maxBytes);
+                    $sent += $this->emit($chunk, $sent, $length);
                 }
             } finally {
                 // ffmpeg is stopped even when the loop is left through an
@@ -164,19 +221,25 @@ final class RadioStreamService
             }
         });
 
+        $response->setStatusCode($range['status']);
         $response->headers->set('Content-Type', 'audio/mpeg');
-        $response->headers->set('Content-Length', (string) $this->maxStreamBytes);
+        $response->headers->set('Content-Length', (string) $length);
+        $response->headers->set('Accept-Ranges', 'bytes');
+
+        if ($range['contentRange'] !== null) {
+            $response->headers->set('Content-Range', $range['contentRange']);
+        }
 
         return $response;
     }
 
     /**
-     * Write a chunk, never sending past the declared length, and report how
-     * many bytes were written.
+     * Write a chunk, never sending past the length the range allows, and report
+     * how many bytes were written.
      */
-    private function emit(string $chunk, int $sent, int $maxBytes): int
+    private function emit(string $chunk, int $sent, int $length): int
     {
-        $remaining = $maxBytes - $sent;
+        $remaining = $length - $sent;
 
         if (strlen($chunk) > $remaining) {
             $chunk = substr($chunk, 0, max(0, $remaining));
