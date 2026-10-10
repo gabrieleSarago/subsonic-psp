@@ -1,4 +1,6 @@
 *
 !private/
 !public/
+!radios/
+!radios/stations.json
 !.gitignore

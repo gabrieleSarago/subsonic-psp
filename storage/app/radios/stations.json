@@ -1,0 +1,22 @@
+[
+    {
+        "id": "rmc",
+        "name": "RMC Radio Monte Carlo",
+        "streamUrl": "http://icecast.unitedradio.it/RMC.mp3"
+    },
+    {
+        "id": "kiss-kiss",
+        "name": "Kiss Kiss Italia",
+        "streamUrl": "http://wma06.fluidstream.net:3614/;listen.pls"
+    },
+    {
+        "id": "classic-hits",
+        "name": "CLASSIC HITS anni 70 80 90",
+        "streamUrl": "https://classichitsradio.streamingmedia.it/play"
+    },
+    {
+        "id": "radio-deejay",
+        "name": "Radio Deejay",
+        "streamUrl": "http://streamcdnb1-4c4b867c89244861ac216426883d1ad0.msvdn.net/radiodeejay/radiodeejay/play1.m3u8"
+    }
+]

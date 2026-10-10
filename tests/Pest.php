@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Testing\TestResponse;
+use Tests\Support\Radios;
 use Tests\TestCase;
 
 /*
@@ -16,6 +17,21 @@ use Tests\TestCase;
 
 pest()->extend(TestCase::class)
     ->in('Feature', 'Unit');
+
+/*
+|--------------------------------------------------------------------------
+| Radio fixtures
+|--------------------------------------------------------------------------
+|
+| The station list is a file on disk in the real application, so a test writes
+| its own outside the tree and it is removed once the test is over, whatever
+| the outcome.
+|
+*/
+
+afterEach(function (): void {
+    Radios::cleanup();
+});
 
 /*
 |--------------------------------------------------------------------------

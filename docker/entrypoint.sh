@@ -45,6 +45,26 @@ if [ ! -f .env ]; then
         printf 'PSP_FEED_PAGE_SIZE=%s\n' "$PSP_FEED_PAGE_SIZE" >> .env
     fi
 
+    if [ -n "${RADIOS_FILE:-}" ]; then
+        printf 'RADIOS_FILE=%s\n' "$RADIOS_FILE" >> .env
+    fi
+
+    if [ -n "${RADIOS_FFMPEG_BIN:-}" ]; then
+        printf 'RADIOS_FFMPEG_BIN=%s\n' "$RADIOS_FFMPEG_BIN" >> .env
+    fi
+
+    if [ -n "${RADIOS_PSP_BITRATE:-}" ]; then
+        printf 'RADIOS_PSP_BITRATE=%s\n' "$RADIOS_PSP_BITRATE" >> .env
+    fi
+
+    if [ -n "${RADIOS_PROBE_TIMEOUT:-}" ]; then
+        printf 'RADIOS_PROBE_TIMEOUT=%s\n' "$RADIOS_PROBE_TIMEOUT" >> .env
+    fi
+
+    if [ -n "${RADIOS_FIRST_CHUNK_TIMEOUT:-}" ]; then
+        printf 'RADIOS_FIRST_CHUNK_TIMEOUT=%s\n' "$RADIOS_FIRST_CHUNK_TIMEOUT" >> .env
+    fi
+
     chmod 600 .env
 
     # The key is written to the file rather than printed, so that it never ends

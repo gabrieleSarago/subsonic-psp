@@ -61,6 +61,23 @@ services:
             # longer collections are served as a sequence of feeds.
             PSP_FEED_PAGE_SIZE: "${PSP_FEED_PAGE_SIZE:-100}"
 
+            # ----------------------------------------------------------------
+            # Radio
+            # ----------------------------------------------------------------
+            # The curated list of stations. It is bind mounted below, so it is
+            # edited on the host: no rebuild and no restart are needed.
+            RADIOS_FILE: "/app/storage/app/radios/stations.json"
+            # The ffmpeg binary used for the realtime transcode.
+            RADIOS_FFMPEG_BIN: "${RADIOS_FFMPEG_BIN:-ffmpeg}"
+            # The device only plays MP3, so every station is transcoded to this
+            # bitrate, whatever the codec of the source is.
+            RADIOS_PSP_BITRATE: "${RADIOS_PSP_BITRATE:-128}"
+            # How long the probe may take to reach a stream, and how long the
+            # first transcoded bytes may take to appear before the station is
+            # reported as unavailable.
+            RADIOS_PROBE_TIMEOUT: "${RADIOS_PROBE_TIMEOUT:-8}"
+            RADIOS_FIRST_CHUNK_TIMEOUT: "${RADIOS_FIRST_CHUNK_TIMEOUT:-15}"
+
         # Traefik finds the containers it fronts through these labels, and routes
         # to the port the server listens on *inside* the container: APP_PORT.
         labels:
@@ -75,8 +92,14 @@ services:
 
         # The cache is written to disk. It holds the album and playlist lists,
         # which are small, but nothing else: the audio is never stored here.
+        #
+        # The station list is bind mounted instead, so it can be edited on the
+        # host without rebuilding the image. The container only reads it; the
+        # list is re-probed on the host, where the file is writable. The file is
+        # committed with the project, so the mount always finds the current list.
         volumes:
             - cache:/app/storage/framework/cache/data
+            - ./storage/app/radios:/app/storage/app/radios
 
         # No healthcheck of its own: the image declares one, so the container is
         # reported as unhealthy if the application stops answering even though it

@@ -5,6 +5,9 @@ use App\Http\Controllers\AudioStreamController;
 use App\Http\Controllers\CoverController;
 use App\Http\Controllers\FeedIndexController;
 use App\Http\Controllers\PlaylistFeedController;
+use App\Http\Controllers\RadioFeedController;
+use App\Http\Controllers\RadioIconController;
+use App\Http\Controllers\RadioStreamController;
 use App\Http\Middleware\ForcePspFeedHeaders;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +46,9 @@ Route::prefix('feeds')
 
         Route::get('playlists/{playlist}', [PlaylistFeedController::class, 'show'])->name('feeds.playlists.show');
         Route::get('playlists/{playlist}/part/{part}', [PlaylistFeedController::class, 'show'])->name('feeds.playlists.part');
+
+        Route::get('radios', [RadioFeedController::class, 'show'])->name('feeds.radios.show');
+        Route::get('radios/part/{part}', [RadioFeedController::class, 'show'])->name('feeds.radios.part');
     });
 
 /*
@@ -59,3 +65,17 @@ Route::prefix('feeds')
 Route::get('audio/{song}', [AudioStreamController::class, 'show'])->name('audio.show');
 Route::get('covers/{cover}', [CoverController::class, 'show'])->name('covers.show');
 Route::get('covers/{cover}/{size}', [CoverController::class, 'show'])->name('covers.show.sized');
+
+/*
+|--------------------------------------------------------------------------
+| Radio
+|--------------------------------------------------------------------------
+|
+| A station is streamed to the device as MP3 by the same enclosure mechanism
+| as a track, and its favicon is proxied like a cover, because the device
+| refuses the certificates most remote sites hand out.
+|
+*/
+
+Route::get('radios/{station}/stream', [RadioStreamController::class, 'show'])->name('radios.stream.show');
+Route::get('radios/{station}/icon', [RadioIconController::class, 'show'])->name('radios.icon.show');

@@ -63,4 +63,34 @@ final class PspUrls
             ? route('feeds.playlists.show', ['playlist' => $playlistId])
             : route('feeds.playlists.part', ['playlist' => $playlistId, 'part' => $part]);
     }
+
+    /**
+     * The feed URL of the radio section. The first part has a shorter URL.
+     */
+    public function radioFeed(int $part = 1): string
+    {
+        return $part <= 1
+            ? route('feeds.radios.show')
+            : route('feeds.radios.part', ['part' => $part]);
+    }
+
+    /**
+     * The live transcode of a station, used as the enclosure of its feed item.
+     */
+    public function radioStream(string $stationId): string
+    {
+        return route('radios.stream.show', ['station' => $stationId]);
+    }
+
+    /**
+     * The proxied favicon of a station.
+     *
+     * The remote image is never linked directly: the device refuses most TLS
+     * certificates, so the RadioIconController fetches the bytes here and only
+     * this address is handed out.
+     */
+    public function radioIcon(string $stationId): string
+    {
+        return route('radios.icon.show', ['station' => $stationId]);
+    }
 }

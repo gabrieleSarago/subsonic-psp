@@ -111,7 +111,7 @@
 <body>
 
 <h1>{{ config('app.name', 'PSP RSS') }}</h1>
-<p class="count">{{ $playlistCount }} playlist, {{ $albumCount }} album</p>
+<p class="count">{{ $playlistCount }} playlist, {{ $albumCount }} album, {{ $radioCount }} radio</p>
 
 @if ($playlists->isNotEmpty())
     <h2>Playlist</h2>
@@ -168,10 +168,33 @@
     </table>
 @endif
 
+<h2>Radio</h2>
+
+@if ($radios->isEmpty())
+    <p class="empty">Nessuna stazione.</p>
+@else
+    <table class="list">
+@foreach ($radios as $link)
+        <tr>
+            <td class="cover">
+                <img src="{{ $urls->radioIcon($link->id) }}" alt="">
+            </td>
+            <td class="name">
+                <span class="title">{{ $link->title }}</span>
+                <span class="sub">{{ $link->subtitle !== '' ? $link->subtitle.' · ' : '' }}{{ $link->meta }}</span>
+            </td>
+@include('psp.parts.feed-links', ['link' => $link, 'urls' => $urls])
+        </tr>
+@endforeach
+    </table>
+@endif
+
 <p class="footer">
     Feed RSS serviti da {{ config('app.name', 'PSP RSS') }}.
-    Ogni album e ogni playlist ha un feed proprio; le raccolte con oltre
-    {{ config('navidrome.feed_page_size') }} brani sono divise in parti.
+    Ogni album, ogni playlist e le stazioni radio hanno un feed proprio; una
+    raccolta con oltre {{ config('navidrome.feed_page_size') }} brani è divisa
+    in parti. Le radio sono ascoltabili sempre, trascodificate in MP3
+    {{ config('radios.bitrate') }} kbps.
 </p>
 
 </body>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\AudioProxyException;
+use App\Exceptions\RadioStreamException;
 use App\Http\Middleware\ForceAppUrlFromConfig;
 use App\Services\Subsonic\SubsonicException;
 use Illuminate\Foundation\Application;
@@ -42,6 +43,14 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (AudioProxyException $exception): Response {
+            report($exception);
+
+            return response($exception->getMessage(), $exception->status, [
+                'Content-Type' => 'text/plain; charset=UTF-8',
+            ]);
+        });
+
+        $exceptions->render(function (RadioStreamException $exception): Response {
             report($exception);
 
             return response($exception->getMessage(), $exception->status, [

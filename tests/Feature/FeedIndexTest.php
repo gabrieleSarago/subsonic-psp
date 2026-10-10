@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Cache;
+use Tests\Support\Radios;
 use Tests\Support\SubsonicApi;
 
 it('lists every album and playlist found on the server', function (): void {
@@ -113,4 +114,24 @@ it('says so when the library is empty', function (): void {
     $content = (string) $this->get('/')->getContent();
 
     expect($content)->toContain('Nessun album.')->toContain('Nessuna playlist.');
+});
+
+it('lists the radio stations with their feed and their proxied icon', function (): void {
+    SubsonicApi::fake();
+    Radios::file([[
+        'id' => 'rmc',
+        'name' => 'RMC Radio Monte Carlo',
+        'streamUrl' => 'http://stream.test/rmc',
+        'tagline' => 'Musica e notizie',
+    ]]);
+
+    $content = (string) $this->get('/')->getContent();
+
+    expect($content)
+        ->toContain('Radio')
+        ->toContain('RMC Radio Monte Carlo')
+        ->toContain('Musica e notizie')
+        ->toContain('1 radio')
+        ->toContain(route('feeds.radios.show'))
+        ->toContain(route('radios.icon.show', ['station' => 'rmc']));
 });

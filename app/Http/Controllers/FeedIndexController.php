@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Data\IndexFeedLink;
+use App\Data\Radio\Station;
 use App\Data\Subsonic\Album;
 use App\Data\Subsonic\Playlist;
 use App\Repositories\Contracts\AlbumRepository;
 use App\Repositories\Contracts\PlaylistRepository;
+use App\Repositories\Contracts\RadioStationRepository;
 use App\Services\PspFeedService;
+use App\Services\Radio\RadioFeedService;
 use App\Support\Duration;
 use App\Support\PspUrls;
 use Illuminate\Support\Collection;
@@ -19,13 +22,15 @@ class FeedIndexController extends Controller
     public function __construct(
         private readonly AlbumRepository $albums,
         private readonly PlaylistRepository $playlists,
+        private readonly RadioStationRepository $radios,
         private readonly PspFeedService $feeds,
+        private readonly RadioFeedService $radioFeeds,
         private readonly PspUrls $urls,
     ) {}
 
     /**
-     * The page the PSP browser opens: every album and playlist, with a link to
-     * each of its feed parts.
+     * The page the PSP browser opens: every album, playlist and radio station,
+     * with a link to each of its feed parts.
      *
      * Nothing here is hardcoded. The lists are read from Navidrome on every
      * request, so a playlist created on the server shows up without a restart.
@@ -34,14 +39,17 @@ class FeedIndexController extends Controller
     {
         $playlists = $this->playlistLinks();
         $albums = $this->albumLinks();
+        $radios = $this->radioLinks();
 
         return view('psp.index', [
             'playlists' => $playlists,
             'albums' => $albums,
+            'radios' => $radios,
             'initials' => $albums->pluck('initial')->unique()->sort()->values(),
             'urls' => $this->urls,
             'playlistCount' => $playlists->count(),
             'albumCount' => $albums->count(),
+            'radioCount' => $radios->count(),
         ]);
     }
 
@@ -84,6 +92,27 @@ class FeedIndexController extends Controller
                 [['initial', 'asc'], ['subtitle', 'asc'], ['title', 'asc']],
                 SORT_NATURAL | SORT_FLAG_CASE,
             )
+            ->values();
+    }
+
+    /**
+     * @return Collection<int, IndexFeedLink>
+     */
+    private function radioLinks(): Collection
+    {
+        $stations = $this->radios->all();
+
+        return $stations
+            ->map(fn (Station $station): IndexFeedLink => new IndexFeedLink(
+                kind: 'radio',
+                id: $station->id,
+                title: $station->label(),
+                subtitle: $station->tagline ?? '',
+                initial: '#',
+                meta: sprintf('%d kbps', (int) config('radios.bitrate')),
+                coverArt: null,
+                parts: $this->radioFeeds->partCount($stations->count()),
+            ))
             ->values();
     }
 

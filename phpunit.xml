@@ -39,6 +39,12 @@
         <env name="SUBSONIC_HOST" value="http://navidrome.test"/>
         <env name="SUBSONIC_USERNAME" value="tester"/>
         <env name="SUBSONIC_PASSWORD" value="s3cret"/>
+        <!--
+            The radio list ships with the application, but a test must not read
+            it: the file does not exist here, so the suite starts from no
+            stations, and a test that needs some writes its own.
+        -->
+        <env name="RADIOS_FILE" value="storage/app/radios/__testing__.json"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>

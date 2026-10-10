@@ -40,6 +40,12 @@ RUN install-php-extensions \
     zip \
     && rm -rf /tmp/*
 
+# The radio section transcodes every station to MP3 in real time with ffmpeg,
+# so the binary must live inside the image.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
 # Never read a configuration file from the host: every setting comes from the
 # environment, which is where docker-compose passes it.
 #
