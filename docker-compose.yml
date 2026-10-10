@@ -77,6 +77,9 @@ services:
             # reported as unavailable.
             RADIOS_PROBE_TIMEOUT: "${RADIOS_PROBE_TIMEOUT:-8}"
             RADIOS_FIRST_CHUNK_TIMEOUT: "${RADIOS_FIRST_CHUNK_TIMEOUT:-15}"
+            # The length declared for a live stream, so the device sees an
+            # answer it can play instead of a chunked one. Never reached.
+            RADIOS_STREAM_DECLARED_LENGTH: "${RADIOS_STREAM_DECLARED_LENGTH:-2000000000}"
 
         # Traefik finds the containers it fronts through these labels, and routes
         # to the port the server listens on *inside* the container: APP_PORT.

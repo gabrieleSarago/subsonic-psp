@@ -15,6 +15,6 @@ class RadioStreamController extends Controller
      */
     public function show(RadioStreamRequest $request): StreamedResponse
     {
-        return $this->radio->stream($request->stationId());
+        return $this->radio->stream($request->stationId(), $request->rangeHeader());
     }
 }

@@ -5,6 +5,7 @@ namespace App\Services\Radio;
 use App\Data\Radio\Station;
 use App\Exceptions\RadioStreamException;
 use App\Repositories\Contracts\RadioStationRepository;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
@@ -12,16 +13,30 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  *
  * The stream is never buffered: ffmpeg writes to a pipe and the bytes are
  * copied to the client in chunks, so one listener is one small process instead
- * of one file in memory. The response has no Content-Length and no Range
- * support, because a live stream cannot answer either honestly.
+ * of one file in memory.
+ *
+ * A live stream has no end, but the device only plays an answer whose length
+ * it can see. A body of unknown length is framed as chunked by the server in
+ * front of this application, and the PSP refuses such an answer, while a track
+ * from the music server always carries the length of the file. The response
+ * therefore declares a length that is never reached, so the audio reaches the
+ * device unwrapped and plays as it arrives.
  */
 final class RadioStreamService
 {
+    /**
+     * The length declared when the configured one is missing or nonsense, so
+     * that a stale configuration cache cannot turn the stream into an empty
+     * answer.
+     */
+    private const int FALLBACK_DECLARED_LENGTH = 2_000_000_000;
+
     public function __construct(
         private readonly RadioStationRepository $stations,
         private readonly StreamProcessRunner $runner,
         private readonly int $firstChunkTimeout,
         private readonly int $chunkSize,
+        private readonly int $declaredLength,
     ) {}
 
     /**
@@ -30,7 +45,7 @@ final class RadioStreamService
      * @throws RadioStreamException when the station is gone or its stream
      *                              produces no audio.
      */
-    public function stream(string $stationId): StreamedResponse
+    public function stream(string $stationId, ?string $rangeHeader = null): StreamedResponse
     {
         $station = $this->stations->find($stationId);
 
@@ -50,7 +65,7 @@ final class RadioStreamService
             );
         }
 
-        return $this->toStreamedResponse($process, $firstChunk);
+        return $this->toStreamedResponse($process, $firstChunk, $rangeHeader);
     }
 
     /**
@@ -100,8 +115,11 @@ final class RadioStreamService
     /**
      * Copy the transcoded bytes to the client without buffering them.
      */
-    private function toStreamedResponse(StreamProcess $process, string $firstChunk): StreamedResponse
-    {
+    private function toStreamedResponse(
+        StreamProcess $process,
+        string $firstChunk,
+        ?string $rangeHeader,
+    ): StreamedResponse {
         $chunkSize = $this->chunkSize;
 
         $response = new StreamedResponse(function () use ($process, $firstChunk, $chunkSize): void {
@@ -149,8 +167,48 @@ final class RadioStreamService
         $response->headers->set('Content-Type', 'audio/mpeg');
         $response->headers->set('Cache-Control', 'no-store');
         $response->headers->set('X-Accel-Buffering', 'no');
+        $this->declareLength($response, $rangeHeader);
 
         return $response;
+    }
+
+    /**
+     * Present the live stream as a resource of a known length.
+     *
+     * Without a Content-Length the answer is framed as chunked on the way out,
+     * and the device refuses a chunked body. The declared length is large
+     * enough never to be reached, so the stream keeps flowing until the
+     * listener stops it. A range that begins at the start of the stream is
+     * answered with a 206, like the music server answers the device for a
+     * track; any other range is ignored, because a live stream cannot seek.
+     */
+    private function declareLength(StreamedResponse $response, ?string $rangeHeader): void
+    {
+        $length = $this->declaredLength > 0
+            ? $this->declaredLength
+            : self::FALLBACK_DECLARED_LENGTH;
+
+        $response->headers->set('Content-Length', (string) $length);
+        $response->headers->set('Accept-Ranges', 'bytes');
+
+        if (! $this->rangeStartsAtZero($rangeHeader)) {
+            return;
+        }
+
+        $response->setStatusCode(Response::HTTP_PARTIAL_CONTENT);
+        $response->headers->set('Content-Range', 'bytes 0-'.($length - 1).'/'.$length);
+    }
+
+    /**
+     * Whether the device asked for the stream from its very first byte.
+     */
+    private function rangeStartsAtZero(?string $rangeHeader): bool
+    {
+        if ($rangeHeader === null) {
+            return false;
+        }
+
+        return preg_match('/^bytes=0-/', trim($rangeHeader)) === 1;
     }
 
     /**
