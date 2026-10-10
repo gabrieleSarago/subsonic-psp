@@ -29,16 +29,4 @@ class RadioStreamRequest extends RoutedRequest
     {
         return (string) $this->route('station');
     }
-
-    /**
-     * The range requested by the client, or null when it asked for the whole
-     * stream. A live stream cannot seek, but the device asks for a range when
-     * it opens an item, and the answer has to fit.
-     */
-    public function rangeHeader(): ?string
-    {
-        $range = $this->header('Range');
-
-        return is_string($range) && trim($range) !== '' ? $range : null;
-    }
 }

@@ -16,60 +16,14 @@ it('streams a station as mp3', function (): void {
     $response->assertOk();
     $response->assertHeader('Content-Type', 'audio/mpeg');
 
-    expect($response->headers->get('Cache-Control'))->toContain('no-store');
-
-    expect($response->streamedContent())->toBe('ID3-streamed-bytes')
+    // The answer is the same one the music proxy gives the device: the bytes of
+    // an MP3 body framed as they arrive, with no length or range invented in
+    // between. A live stream can promise neither.
+    expect($response->headers->has('Content-Length'))->toBeFalse()
+        ->and($response->headers->has('Accept-Ranges'))->toBeFalse()
+        ->and($response->streamedContent())->toBe('ID3-streamed-bytes')
         ->and($runner->stations)->toHaveCount(1)
         ->and($runner->stations[0]->playableUrl())->toBe('http://stream.test/rmc');
-});
-
-it('declares a length and range support so the body is not sent chunked', function (): void {
-    Radios::file([['id' => 'rmc', 'name' => 'RMC', 'streamUrl' => 'http://stream.test/rmc']]);
-    config(['radios.stream_declared_length' => 1000000]);
-
-    $this->app->instance(StreamProcessRunner::class, new FakeStreamProcessRunner(FakeStreamProcess::emitting('ID3')));
-
-    $response = $this->get('/radios/rmc/stream');
-
-    // The device refuses an answer whose length it cannot see, which is what a
-    // live stream becomes once the server frames it as chunked.
-    $response->assertOk();
-    $response->assertHeader('Content-Length', '1000000');
-    $response->assertHeader('Accept-Ranges', 'bytes');
-});
-
-it('never declares an empty stream when the length is misconfigured', function (): void {
-    Radios::file([['id' => 'rmc', 'name' => 'RMC', 'streamUrl' => 'http://stream.test/rmc']]);
-    config(['radios.stream_declared_length' => 0]);
-
-    $this->app->instance(StreamProcessRunner::class, new FakeStreamProcessRunner(FakeStreamProcess::emitting('ID3')));
-
-    $this->get('/radios/rmc/stream')->assertHeader('Content-Length', '2000000000');
-});
-
-it('answers a range from the start with a partial response', function (): void {
-    Radios::file([['id' => 'rmc', 'name' => 'RMC', 'streamUrl' => 'http://stream.test/rmc']]);
-    config(['radios.stream_declared_length' => 1000000]);
-
-    $this->app->instance(StreamProcessRunner::class, new FakeStreamProcessRunner(FakeStreamProcess::emitting('ID3')));
-
-    $response = $this->get('/radios/rmc/stream', ['Range' => 'bytes=0-']);
-
-    $response->assertStatus(206);
-    $response->assertHeader('Content-Range', 'bytes 0-999999/1000000');
-    $response->assertHeader('Content-Length', '1000000');
-});
-
-it('ignores a range a live stream cannot seek to', function (): void {
-    Radios::file([['id' => 'rmc', 'name' => 'RMC', 'streamUrl' => 'http://stream.test/rmc']]);
-    config(['radios.stream_declared_length' => 1000000]);
-
-    $this->app->instance(StreamProcessRunner::class, new FakeStreamProcessRunner(FakeStreamProcess::emitting('ID3')));
-
-    $response = $this->get('/radios/rmc/stream', ['Range' => 'bytes=500-']);
-
-    $response->assertOk();
-    $response->assertHeader('Content-Length', '1000000');
 });
 
 it('transcodes the resolved url rather than the one written by hand', function (): void {

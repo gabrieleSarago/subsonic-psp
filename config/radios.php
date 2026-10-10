@@ -68,17 +68,6 @@ return [
     'stream_chunk_size' => (int) env('RADIOS_STREAM_CHUNK_SIZE', 65536),
 
     /*
-    | The length, in bytes, declared for a live stream. A stream has no end,
-    | but the device only starts to play an answer whose length it can see: a
-    | body of unknown length is framed as chunked by the server in front of
-    | this application, and the PSP refuses such an answer. Declaring a length
-    | keeps the audio unwrapped. The value is never reached in practice: at
-    | 128 kbps it covers a listening session of a day and a half, and playback
-    | ends when the listener stops, not when the declared length runs out.
-    */
-    'stream_declared_length' => (int) env('RADIOS_STREAM_DECLARED_LENGTH', 2000000000),
-
-    /*
     | Maximum number of stations in a single feed. A list longer than this is
     | served as a sequence of parts, like an album or a playlist.
     */
