@@ -41,9 +41,9 @@ it('serves the stations as a feed with a live enclosure each', function (): void
         ->and((string) $items[0]->description)->toBe('Musica e notizie')
         ->and((string) $items[0]->guid)->toBe('radio:rmc')
         ->and($enclosures[0]['url'])->toBe(route('radios.stream.show', ['station' => 'rmc']))
-        // A live stream has no size, and the device is told so rather than
-        // being given an invented one.
-        ->and($enclosures[0]['length'])->toBe('0')
+        // A live stream has no size, so no length is promised: the attribute is
+        // left out rather than being set to zero.
+        ->and($enclosures[0]['length'])->toBe('')
         ->and($enclosures[0]['type'])->toBe('audio/mpeg')
         ->and((string) $items[1]->description)->toBe('');
 });

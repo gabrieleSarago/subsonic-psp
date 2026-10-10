@@ -52,7 +52,8 @@
             <category>{{ $category }}</category>
 @endforeach
 @if (($item->enclosure ?? '') !== '')
-            <enclosure url="{{ $item->enclosure }}" length="{{ (int) ($item->enclosureLength ?? 0) }}" type="{{ $item->enclosureType ?? 'audio/mpeg' }}" />
+            @php($enclosureLength = (int) ($item->enclosureLength ?? 0))
+            <enclosure url="{{ $item->enclosure }}"@if ($enclosureLength > 0) length="{{ $enclosureLength }}"@endif type="{{ $item->enclosureType ?? 'audio/mpeg' }}" />
 @endif
         </item>
 @endforeach
