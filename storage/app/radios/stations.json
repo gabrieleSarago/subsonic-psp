@@ -1,22 +1,252 @@
 [
     {
-        "id": "rmc",
-        "name": "RMC Radio Monte Carlo",
-        "streamUrl": "http://icecast.unitedradio.it/RMC.mp3"
+        "id": "radio-italia-solo-musica-italiana",
+        "name": "Radio Italia Solo Musica Italiana",
+        "streamUrl": "https://radioitaliasmi.akamaized.net/hls/live/2093120/RISMI/stream01/streamPlaylist.m3u8"
     },
     {
-        "id": "kiss-kiss",
-        "name": "Kiss Kiss Italia",
-        "streamUrl": "http://wma06.fluidstream.net:3614/;listen.pls"
+        "id": "radio-kiss-kiss",
+        "name": "Radio Kiss Kiss",
+        "streamUrl": "http://wma07.fluidstream.net:4610/"
     },
     {
-        "id": "classic-hits",
-        "name": "CLASSIC HITS anni 70 80 90",
-        "streamUrl": "https://classichitsradio.streamingmedia.it/play"
+        "id": "radio-24-il-sole-24-ore",
+        "name": "Radio 24 il sole 24 ore",
+        "streamUrl": "http://shoutcast2.radio24.it:8000/;"
     },
     {
         "id": "radio-deejay",
         "name": "Radio Deejay",
-        "streamUrl": "http://streamcdnb1-4c4b867c89244861ac216426883d1ad0.msvdn.net/radiodeejay/radiodeejay/play1.m3u8"
+        "streamUrl": "https://4c4b867c89244861ac216426883d1ad0.msvdn.net/radiodeejay/radiodeejay/master_ma.m3u8"
+    },
+    {
+        "id": "rai-radio-1",
+        "name": "Rai Radio 1",
+        "streamUrl": "http://icestreaming.rai.it/1.mp3"
+    },
+    {
+        "id": "rtl-102-5",
+        "name": "RTL 102.5",
+        "streamUrl": "https://dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S97044836/tbbP8T1ZRPBL/playlist_audio.m3u8"
+    },
+    {
+        "id": "radio-105-network",
+        "name": "Radio 105 Network",
+        "streamUrl": "http://icecast.unitedradio.it/Radio105.mp3"
+    },
+    {
+        "id": "radio-ibiza",
+        "name": "Radio Ibiza",
+        "streamUrl": "http://wma08.fluidstream.net:5010/;stream.aac"
+    },
+    {
+        "id": "virgin-radio-italia",
+        "name": "Virgin Radio Italia",
+        "streamUrl": "http://icecast.unitedradio.it/Virgin.mp3"
+    },
+    {
+        "id": "rai-radio-3",
+        "name": "Rai Radio 3",
+        "streamUrl": "http://icestreaming.rai.it/3.mp3"
+    },
+    {
+        "id": "70-80-90",
+        "name": "70 80 90",
+        "streamUrl": "https://rblive.it:8170/radio.mp3"
+    },
+    {
+        "id": "radio-armisa",
+        "name": "Radio Armisa",
+        "streamUrl": "https://onair.armisa.it/listen/armisa/radio.mp3"
+    },
+    {
+        "id": "deejay-80",
+        "name": "Deejay 80",
+        "streamUrl": "https://4c4b867c89244861ac216426883d1ad0.msvdn.net/webradio/deejay80/playlist.m3u8"
+    },
+    {
+        "id": "rmc-radio-monte-carlo",
+        "name": "RMC Radio Monte Carlo",
+        "streamUrl": "http://icecast.unitedradio.it/RMC.mp3"
+    },
+    {
+        "id": "rds-relax",
+        "name": "RDS relax",
+        "streamUrl": "http://icstream.rds.radio/rdsrelax"
+    },
+    {
+        "id": "classic-hits-radio-italia",
+        "name": "CLASSIC HITS RADIO Italia",
+        "streamUrl": "https://classichitsradio.streamingmedia.it/play"
+    },
+    {
+        "id": "radio-sportiva",
+        "name": "Radio Sportiva",
+        "streamUrl": "https://sportiva.inmystream.it/stream/sportiva"
+    },
+    {
+        "id": "radio-m2o",
+        "name": "Radio M2O",
+        "streamUrl": "https://4c4b867c89244861ac216426883d1ad0.msvdn.net/radiom2o/radiom2o/master_ma.m3u8"
+    },
+    {
+        "id": "radio-kiss-kiss-italia",
+        "name": "Radio Kiss Kiss Italia",
+        "streamUrl": "http://wma06.fluidstream.net:3614/;listen.pls"
+    },
+    {
+        "id": "funky-radio-only-funk-music-60-s-70-s",
+        "name": "FUNKY RADIO - Only Funk Music (60's 70's)",
+        "streamUrl": "https://funkyradio.streamingmedia.it/play.mp3"
+    },
+    {
+        "id": "radio-80",
+        "name": "Radio 80",
+        "streamUrl": "http://str01.fluidstream.net:7020/;stream.mp3"
+    },
+    {
+        "id": "r101-fm",
+        "name": "R101 FM",
+        "streamUrl": "http://icecast.unitedradio.it/r101"
+    },
+    {
+        "id": "radio-piterpan",
+        "name": "Radio Piterpan",
+        "streamUrl": "http://wma01.fluidstream.net/piterpan"
+    },
+    {
+        "id": "virgin-radio-classic-rock",
+        "name": "Virgin Radio Classic Rock",
+        "streamUrl": "http://icy.unitedradio.it/VirginRockClassics.mp3"
+    },
+    {
+        "id": "rtl-102-5-disco",
+        "name": "RTL 102.5 Disco",
+        "streamUrl": "https://dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S51100361/Sz3kCA55PrRh/playlist_audio.m3u8"
+    },
+    {
+        "id": "radio-kiss-kiss-napoli",
+        "name": "Radio Kiss Kiss Napoli",
+        "streamUrl": "http://wma08.fluidstream.net:3612/;listen.pls"
+    },
+    {
+        "id": "m2o-originals-radio",
+        "name": "m2o originals radio",
+        "streamUrl": "https://stream.laut.fm/m2o-originals-radio"
+    },
+    {
+        "id": "radio-freccia",
+        "name": "Radio Freccia",
+        "streamUrl": "https://dd782ed59e2a4e86aabf6fc508674b59.msvdn.net/live/S3160845/0tuSetc8UFkF/playlist_audio.m3u8"
+    },
+    {
+        "id": "radio-dimensione-relax",
+        "name": "RADIO DIMENSIONE RELAX",
+        "streamUrl": "https://az1.mediacp.eu/listen/radiodimensionerelax/radio.mp3"
+    },
+    {
+        "id": "virgin-radio-italy",
+        "name": "Virgin Radio Italy",
+        "streamUrl": "https://icy.unitedradio.it/Virgin.mp3"
+    },
+    {
+        "id": "radio-bruno-made-in-italy",
+        "name": "Radio Bruno - Made in Italy",
+        "streamUrl": "https://stream2.xdevel.com/audio1s975355-54/stream/icecast.audio"
+    },
+    {
+        "id": "nature-radio-sleep",
+        "name": "NATURE RADIO SLEEP",
+        "streamUrl": "https://az1.mediacp.eu/listen/natureradiosleep/radio.mp3"
+    },
+    {
+        "id": "radio-popolare",
+        "name": "Radio Popolare",
+        "streamUrl": "http://livex.radiopopolare.it/radiopop"
+    },
+    {
+        "id": "romantica-radio-romanticaradio-web",
+        "name": "Romantica Radio (RomanticaRadio Web)",
+        "streamUrl": "https://vetrina.multi-radio.com/romanticaradio"
+    },
+    {
+        "id": "radio-birikina",
+        "name": "Radio Birikina",
+        "streamUrl": "http://wma01.fluidstream.net/birikina"
+    },
+    {
+        "id": "rai-news-24",
+        "name": "Rai News 24",
+        "streamUrl": "https://streamcdnb3-8e7439fdb1694c8da3a0fd63e4dda518.msvdn.net/rainews1/hls/rainews_2400/chunklist.m3u8"
+    },
+    {
+        "id": "neu-radio",
+        "name": "NEU RADIO",
+        "streamUrl": "https://nr9.newradio.it/proxy/ebaruffa?mp=/stream"
+    },
+    {
+        "id": "babboleo-suono",
+        "name": "Babboleo Suono",
+        "streamUrl": "https://stream.rcs.revma.com/sv2hu8qqv6bwv"
+    },
+    {
+        "id": "radio-capital",
+        "name": "Radio Capital",
+        "streamUrl": "https://4c4b867c89244861ac216426883d1ad0.msvdn.net/radiocapital/radiocapital/master_ma.m3u8"
+    },
+    {
+        "id": "lattemiele",
+        "name": "Lattemiele",
+        "streamUrl": "https://sr15.inmystream.it:8000/stream"
+    },
+    {
+        "id": "radio-volami-nel-cuore",
+        "name": "Radio Volami nel Cuore",
+        "streamUrl": "https://rci.canaleitalia.tv:8009/;"
+    },
+    {
+        "id": "70-80-hits-hq",
+        "name": "70 80 Hits HQ",
+        "streamUrl": "https://nr8.newradio.it:19574/stream"
+    },
+    {
+        "id": "radio-radicale",
+        "name": "Radio Radicale",
+        "streamUrl": "http://live.radioradicale.it/live.mp3"
+    },
+    {
+        "id": "jazz-radio-swiss",
+        "name": "Jazz | Radio Swiss",
+        "streamUrl": "https://stream.srg-ssr.ch/m/rsj/mp3_128"
+    },
+    {
+        "id": "radio-maria",
+        "name": "Radio Maria",
+        "streamUrl": "http://dreamsiteradiocp.com:8092/;"
+    },
+    {
+        "id": "radio-swiss-classic",
+        "name": "Radio Swiss Classic",
+        "streamUrl": "http://stream.srg-ssr.ch/m/rsc_it/mp3_128"
+    },
+    {
+        "id": "mc2-caf-e-del-mar-collection",
+        "name": "MC2 Cafè Del Mar Collection",
+        "streamUrl": "https://n13a-eu.rcs.revma.com/a2n83wxayk3vv?rj-ttl=5&rj-tok=AAABndIfXksAiTXrqw2SmfAauA"
+    },
+    {
+        "id": "r101-enjoy-the-music",
+        "name": "R101 Enjoy The Music",
+        "streamUrl": "http://icy.unitedradio.it/101Legend.aac"
+    },
+    {
+        "id": "radio-maril-u",
+        "name": "Radio Marilù",
+        "streamUrl": "http://wma01.fluidstream.net/marilu"
+    },
+    {
+        "id": "rai-radio-classica-filodiffusione",
+        "name": "Rai Radio Classica Filodiffusione",
+        "streamUrl": "http://icestreaming.rai.it/5.mp3"
     }
 ]
