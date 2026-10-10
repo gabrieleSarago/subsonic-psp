@@ -116,22 +116,23 @@ it('says so when the library is empty', function (): void {
     expect($content)->toContain('Nessun album.')->toContain('Nessuna playlist.');
 });
 
-it('lists the radio stations with their feed and their proxied icon', function (): void {
+it('offers the radio feed as a single entry at the top', function (): void {
     SubsonicApi::fake();
-    Radios::file([[
-        'id' => 'rmc',
-        'name' => 'RMC Radio Monte Carlo',
-        'streamUrl' => 'http://stream.test/rmc',
-        'tagline' => 'Musica e notizie',
-    ]]);
+    Radios::file([
+        ['id' => 'rmc', 'name' => 'RMC Radio Monte Carlo', 'streamUrl' => 'http://stream.test/rmc', 'tagline' => 'Musica e notizie'],
+        ['id' => 'kiss', 'name' => 'Radio Kiss Kiss', 'streamUrl' => 'http://stream.test/kiss'],
+    ]);
 
     $content = (string) $this->get('/')->getContent();
 
     expect($content)
-        ->toContain('Radio')
-        ->toContain('RMC Radio Monte Carlo')
-        ->toContain('Musica e notizie')
-        ->toContain('1 radio')
-        ->toContain(route('feeds.radios.show'))
-        ->toContain(route('radios.icon.show', ['station' => 'rmc']));
+        ->toContain('href="'.route('feeds.radios.show').'"')
+        ->toContain('2 stazioni')
+        ->toContain('2 radio')
+        ->not->toContain('RMC Radio Monte Carlo')
+        ->not->toContain('Radio Kiss Kiss')
+        ->not->toContain('Musica e notizie')
+        ->not->toContain(route('radios.icon.show', ['station' => 'rmc']));
+
+    expect(strpos($content, '<h2>Radio</h2>'))->toBeLessThan(strpos($content, '<h2>Playlist</h2>'));
 });

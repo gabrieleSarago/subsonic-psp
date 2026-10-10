@@ -72,9 +72,5 @@ it('never links the remote image directly from the index page', function (): voi
         'favicon' => 'http://cdn.test/logo.png',
     ]]);
 
-    $content = (string) $this->get('/')->getContent();
-
-    expect($content)
-        ->toContain(route('radios.icon.show', ['station' => 'rmc']))
-        ->not->toContain('http://cdn.test/logo.png');
+    expect((string) $this->get('/')->getContent())->not->toContain('http://cdn.test/logo.png');
 });

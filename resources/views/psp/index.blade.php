@@ -113,6 +113,24 @@
 <h1>{{ config('app.name', 'PSP RSS') }}</h1>
 <p class="count">{{ $playlistCount }} playlist, {{ $albumCount }} album, {{ $radioCount }} radio</p>
 
+<h2>Radio</h2>
+
+@if ($radioCount > 0)
+    <table class="list">
+        <tr>
+            <td class="name">
+                <span class="title">Radio</span>
+                <span class="sub">{{ $radioCount === 1 ? '1 stazione' : $radioCount.' stazioni' }} · {{ config('radios.bitrate') }} kbps</span>
+            </td>
+            <td class="feed">
+                <a href="{{ $urls->radioFeed() }}">RSS</a>
+            </td>
+        </tr>
+    </table>
+@else
+    <p class="empty">Nessuna stazione.</p>
+@endif
+
 @if ($playlists->isNotEmpty())
     <h2>Playlist</h2>
     <table class="list">
@@ -168,33 +186,12 @@
     </table>
 @endif
 
-<h2>Radio</h2>
-
-@if ($radios->isEmpty())
-    <p class="empty">Nessuna stazione.</p>
-@else
-    <table class="list">
-@foreach ($radios as $link)
-        <tr>
-            <td class="cover">
-                <img src="{{ $urls->radioIcon($link->id) }}" alt="">
-            </td>
-            <td class="name">
-                <span class="title">{{ $link->title }}</span>
-                <span class="sub">{{ $link->subtitle !== '' ? $link->subtitle.' · ' : '' }}{{ $link->meta }}</span>
-            </td>
-@include('psp.parts.feed-links', ['link' => $link, 'urls' => $urls])
-        </tr>
-@endforeach
-    </table>
-@endif
-
 <p class="footer">
     Feed RSS serviti da {{ config('app.name', 'PSP RSS') }}.
-    Ogni album, ogni playlist e le stazioni radio hanno un feed proprio; una
-    raccolta con oltre {{ config('navidrome.feed_page_size') }} brani è divisa
-    in parti. Le radio sono ascoltabili sempre, trascodificate in MP3
-    {{ config('radios.bitrate') }} kbps.
+    Ogni album e ogni playlist hanno un feed proprio; una raccolta con oltre
+    {{ config('navidrome.feed_page_size') }} brani è divisa in parti. Il feed
+    Radio raccoglie tutte le stazioni, ascoltabili sempre e trascodificate in
+    MP3 {{ config('radios.bitrate') }} kbps.
 </p>
 
 </body>
