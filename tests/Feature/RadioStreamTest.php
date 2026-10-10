@@ -16,14 +16,43 @@ it('streams a station as mp3', function (): void {
     $response->assertOk();
     $response->assertHeader('Content-Type', 'audio/mpeg');
 
-    // The answer is the same one the music proxy gives the device: the bytes of
-    // an MP3 body framed as they arrive, with no length or range invented in
-    // between. A live stream can promise neither.
-    expect($response->headers->has('Content-Length'))->toBeFalse()
+    // The device treats the enclosure as a music file and reads the length
+    // before it plays anything, so the stream declares the finite amount of
+    // audio it will carry instead of leaving the size unknown.
+    expect($response->headers->get('Content-Length'))->toBe('57600000')
         ->and($response->headers->has('Accept-Ranges'))->toBeFalse()
         ->and($response->streamedContent())->toBe('ID3-streamed-bytes')
         ->and($runner->stations)->toHaveCount(1)
         ->and($runner->stations[0]->playableUrl())->toBe('http://stream.test/rmc');
+});
+
+it('stops at the declared length so the stream ends like a file', function (): void {
+    Radios::file([['id' => 'rmc', 'name' => 'RMC', 'streamUrl' => 'http://stream.test/rmc']]);
+    config(['radios.stream_max_bytes' => 5000]);
+
+    $this->app->instance(StreamProcessRunner::class, new FakeStreamProcessRunner(FakeStreamProcess::emitting(str_repeat('M', 100000))));
+
+    $response = $this->get('/radios/rmc/stream');
+
+    $response->assertHeader('Content-Length', '5000');
+
+    expect($response->streamedContent())->toBe(str_repeat('M', 5000));
+});
+
+it('answers a size probe without starting a transcode', function (): void {
+    Radios::file([['id' => 'rmc', 'name' => 'RMC', 'streamUrl' => 'http://stream.test/rmc']]);
+    config(['radios.stream_max_bytes' => 5000]);
+
+    $runner = new FakeStreamProcessRunner(FakeStreamProcess::emitting('ID3'));
+    $this->app->instance(StreamProcessRunner::class, $runner);
+
+    $response = $this->head('/radios/rmc/stream');
+
+    $response->assertOk();
+    $response->assertHeader('Content-Type', 'audio/mpeg');
+    $response->assertHeader('Content-Length', '5000');
+
+    expect($runner->stations)->toHaveCount(0);
 });
 
 it('transcodes the resolved url rather than the one written by hand', function (): void {

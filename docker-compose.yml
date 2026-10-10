@@ -77,6 +77,7 @@ services:
             # reported as unavailable.
             RADIOS_PROBE_TIMEOUT: "${RADIOS_PROBE_TIMEOUT:-8}"
             RADIOS_FIRST_CHUNK_TIMEOUT: "${RADIOS_FIRST_CHUNK_TIMEOUT:-15}"
+            RADIOS_STREAM_MAX_BYTES: "${RADIOS_STREAM_MAX_BYTES:-57600000}"
 
         # Traefik finds the containers it fronts through these labels, and routes
         # to the port the server listens on *inside* the container: APP_PORT.

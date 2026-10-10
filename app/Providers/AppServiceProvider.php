@@ -86,6 +86,7 @@ class AppServiceProvider extends ServiceProvider
             $app->make(StreamProcessRunner::class),
             (int) config('radios.first_chunk_timeout'),
             (int) config('radios.stream_chunk_size'),
+            (int) config('radios.stream_max_bytes'),
         ));
 
         $this->app->singleton(RadioFeedItemFactory::class, fn ($app) => new RadioFeedItemFactory(

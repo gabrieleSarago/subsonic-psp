@@ -65,6 +65,10 @@ if [ ! -f .env ]; then
         printf 'RADIOS_FIRST_CHUNK_TIMEOUT=%s\n' "$RADIOS_FIRST_CHUNK_TIMEOUT" >> .env
     fi
 
+    if [ -n "${RADIOS_STREAM_MAX_BYTES:-}" ]; then
+        printf 'RADIOS_STREAM_MAX_BYTES=%s\n' "$RADIOS_STREAM_MAX_BYTES" >> .env
+    fi
+
     chmod 600 .env
 
     # The key is written to the file rather than printed, so that it never ends

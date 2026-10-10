@@ -14,10 +14,13 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  * copied to the client in chunks, so one listener is one small process instead
  * of one file in memory.
  *
- * The answer is the same one the music proxy gives the device for a track: an
- * MP3 body framed as it arrives, with no header invented in between. A live
- * stream has no length and cannot seek, and the device is better served by an
- * honest answer than by a promised length or range that cannot be honoured.
+ * The device treats whatever an enclosure points at as a music file: it reads
+ * the length first, then plays the bytes as they arrive, and it can seek within
+ * them like a track on a memory stick. A live stream has no end, so the answer
+ * declares one: the stream carries at most a configurable amount of audio (an
+ * hour at the transcode bitrate) and then stops, so the device sees a finite
+ * file it knows how to play. Playback ends when that much audio has been
+ * delivered, or sooner when the listener stops it.
  */
 final class RadioStreamService
 {
@@ -26,7 +29,17 @@ final class RadioStreamService
         private readonly StreamProcessRunner $runner,
         private readonly int $firstChunkTimeout,
         private readonly int $chunkSize,
+        private readonly int $maxStreamBytes,
     ) {}
+
+    /**
+     * The number of bytes a single playback of a station declares, so a caller
+     * can answer a size probe without starting a transcode.
+     */
+    public function declaredLength(): int
+    {
+        return $this->maxStreamBytes;
+    }
 
     /**
      * Open the stream of a station.
@@ -102,20 +115,22 @@ final class RadioStreamService
     }
 
     /**
-     * Copy the transcoded bytes to the client without buffering them.
+     * Copy the transcoded bytes to the client, up to the declared length.
      */
     private function toStreamedResponse(StreamProcess $process, string $firstChunk): StreamedResponse
     {
         $chunkSize = $this->chunkSize;
+        $maxBytes = $this->maxStreamBytes;
 
-        $response = new StreamedResponse(function () use ($process, $firstChunk, $chunkSize): void {
+        $response = new StreamedResponse(function () use ($process, $firstChunk, $chunkSize, $maxBytes): void {
             ignore_user_abort(true);
 
-            try {
-                echo $firstChunk;
-                $this->flush();
+            $sent = 0;
 
-                while (true) {
+            try {
+                $sent += $this->emit($firstChunk, $sent, $maxBytes);
+
+                while ($sent < $maxBytes) {
                     if (connection_aborted() !== 0) {
                         break;
                     }
@@ -140,8 +155,7 @@ final class RadioStreamService
                         break;
                     }
 
-                    echo $chunk;
-                    $this->flush();
+                    $sent += $this->emit($chunk, $sent, $maxBytes);
                 }
             } finally {
                 // ffmpeg is stopped even when the loop is left through an
@@ -151,8 +165,31 @@ final class RadioStreamService
         });
 
         $response->headers->set('Content-Type', 'audio/mpeg');
+        $response->headers->set('Content-Length', (string) $this->maxStreamBytes);
 
         return $response;
+    }
+
+    /**
+     * Write a chunk, never sending past the declared length, and report how
+     * many bytes were written.
+     */
+    private function emit(string $chunk, int $sent, int $maxBytes): int
+    {
+        $remaining = $maxBytes - $sent;
+
+        if (strlen($chunk) > $remaining) {
+            $chunk = substr($chunk, 0, max(0, $remaining));
+        }
+
+        if ($chunk === '') {
+            return 0;
+        }
+
+        echo $chunk;
+        $this->flush();
+
+        return strlen($chunk);
     }
 
     /**

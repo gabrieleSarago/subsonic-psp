@@ -68,6 +68,17 @@ return [
     'stream_chunk_size' => (int) env('RADIOS_STREAM_CHUNK_SIZE', 65536),
 
     /*
+    | The most audio, in bytes, a single playback of a station may carry.
+    |
+    | The device treats whatever an enclosure points at as a music file: it
+    | reads the length first and plays the bytes as they arrive, so a live
+    | stream has to look like a file of a known size. This is that size, an
+    | hour at the transcode bitrate, after which the stream ends cleanly and
+    | the listener starts the station again.
+    */
+    'stream_max_bytes' => (int) env('RADIOS_STREAM_MAX_BYTES', 57600000),
+
+    /*
     | Maximum number of stations in a single feed. A list longer than this is
     | served as a sequence of parts, like an album or a playlist.
     */
