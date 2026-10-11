@@ -65,7 +65,10 @@ Route::prefix('feeds')
 
 Route::get('audio/{song}', [AudioStreamController::class, 'show'])->name('audio.show');
 Route::get('covers/{cover}', [CoverController::class, 'show'])->name('covers.show');
-Route::get('covers/{cover}/thumb', [CoverController::class, 'thumb'])->name('covers.thumb');
+// The feed item thumbnail must end in an image extension: the PSP picks the
+// codec of a <media:thumbnail> from the URL, and an extensionless one is
+// ignored, however valid the JPEG behind it is.
+Route::get('covers/{cover}/thumb.jpg', [CoverController::class, 'thumb'])->name('covers.thumb');
 Route::get('covers/{cover}/{size}', [CoverController::class, 'show'])->where('size', '[0-9]+')->name('covers.show.sized');
 
 /*
@@ -80,7 +83,9 @@ Route::get('covers/{cover}/{size}', [CoverController::class, 'show'])->where('si
 */
 
 Route::get('radios/{station}/stream', [RadioStreamController::class, 'show'])->name('radios.stream.show');
-Route::get('radios/{station}/icon', [RadioIconController::class, 'show'])->name('radios.icon.show');
+// Also ends in .jpg for the same reason as the cover thumbnail: the PSP reads
+// the item image only from a URL that names an image file.
+Route::get('radios/{station}/icon.jpg', [RadioIconController::class, 'show'])->name('radios.icon.show');
 
 /*
 |--------------------------------------------------------------------------

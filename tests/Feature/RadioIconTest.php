@@ -32,7 +32,7 @@ it('serves the favicon of a station as a JPEG thumbnail', function (): void {
         'http://cdn.test/logo.png' => Http::response(faviconFixture(), 200, ['Content-Type' => 'image/png']),
     ]);
 
-    $response = $this->get('/radios/rmc/icon');
+    $response = $this->get('/radios/rmc/icon.jpg');
 
     $response->assertOk();
     $response->assertHeader('Content-Type', 'image/jpeg');
@@ -48,7 +48,7 @@ it('serves the favicon of a station as a JPEG thumbnail', function (): void {
 it('serves a neutral pixel when the station has no favicon', function (): void {
     Radios::file([['id' => 'rmc', 'name' => 'RMC', 'streamUrl' => 'http://stream.test/rmc']]);
 
-    $response = $this->get('/radios/rmc/icon');
+    $response = $this->get('/radios/rmc/icon.jpg');
 
     $response->assertOk();
     $response->assertHeader('Content-Type', 'image/jpeg');
@@ -66,7 +66,7 @@ it('serves the neutral pixel when the remote answer is not an image', function (
         'http://cdn.test/logo' => Http::response('<html>non è un\'immagine</html>', 200, ['Content-Type' => 'text/html']),
     ]);
 
-    $response = $this->get('/radios/rmc/icon');
+    $response = $this->get('/radios/rmc/icon.jpg');
 
     $response->assertOk();
     $response->assertHeader('Content-Type', 'image/jpeg');
@@ -75,7 +75,7 @@ it('serves the neutral pixel when the remote answer is not an image', function (
 it('serves the neutral pixel for a station that is not in the list', function (): void {
     Radios::file([]);
 
-    $response = $this->get('/radios/assente/icon');
+    $response = $this->get('/radios/assente/icon.jpg');
 
     $response->assertOk();
     $response->assertHeader('Content-Type', 'image/jpeg');

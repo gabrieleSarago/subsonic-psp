@@ -43,7 +43,7 @@ it('answers a neutral image rather than an error when the artwork is missing', f
 it('serves the artwork as a JPEG thumbnail for the feed items', function (): void {
     SubsonicApi::fake(albums: [SubsonicApi::album(SubsonicApi::songs(1))]);
 
-    $response = $this->get('/covers/al-1/thumb');
+    $response = $this->get('/covers/al-1/thumb.jpg');
 
     $response->assertOk();
     $response->assertHeader('Content-Type', 'image/jpeg');
@@ -57,7 +57,7 @@ it('serves the artwork as a JPEG thumbnail for the feed items', function (): voi
 it('answers a neutral JPEG thumbnail when the artwork is missing', function (): void {
     SubsonicApi::fake();
 
-    $response = $this->get('/covers/al-1/thumb');
+    $response = $this->get('/covers/al-1/thumb.jpg');
 
     $response->assertOk();
     $response->assertHeader('Content-Type', 'image/jpeg');
