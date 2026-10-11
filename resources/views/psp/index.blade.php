@@ -131,6 +131,20 @@
     <p class="empty">Nessuna stazione.</p>
 @endif
 
+{{-- Debug scaffolding for the item icon question, removed with the probe feed
+     once it is settled. Always shown, so it is reachable even with no stations. --}}
+<table class="list">
+    <tr>
+        <td class="name">
+            <span class="title">Prova icone (debug)</span>
+            <span class="sub">7 item, ognuno con un markup diverso</span>
+        </td>
+        <td class="feed">
+            <a href="{{ $testFeedUrl }}">RSS</a>
+        </td>
+    </tr>
+</table>
+
 @if ($playlists->isNotEmpty())
     <h2>Playlist</h2>
     <table class="list">

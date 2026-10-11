@@ -46,6 +46,9 @@ class FeedIndexController extends Controller
             'playlistCount' => $playlists->count(),
             'albumCount' => $albums->count(),
             'radioCount' => $radioCount,
+            // Debug scaffolding for the item icon question, removed with the
+            // probe feed once it is settled.
+            'testFeedUrl' => route('psp-test.feed'),
         ]);
     }
 

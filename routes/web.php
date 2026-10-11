@@ -5,6 +5,7 @@ use App\Http\Controllers\AudioStreamController;
 use App\Http\Controllers\CoverController;
 use App\Http\Controllers\FeedIndexController;
 use App\Http\Controllers\PlaylistFeedController;
+use App\Http\Controllers\PspTestFeedController;
 use App\Http\Controllers\RadioFeedController;
 use App\Http\Controllers\RadioIconController;
 use App\Http\Controllers\RadioStreamController;
@@ -80,3 +81,22 @@ Route::get('covers/{cover}/{size}', [CoverController::class, 'show'])->where('si
 
 Route::get('radios/{station}/stream', [RadioStreamController::class, 'show'])->name('radios.stream.show');
 Route::get('radios/{station}/icon', [RadioIconController::class, 'show'])->name('radios.icon.show');
+
+/*
+|--------------------------------------------------------------------------
+| Item icon probe
+|--------------------------------------------------------------------------
+|
+| Debug scaffolding for the PSP item icons, to be removed once the question
+| is settled. The feed exercises every plausible way to attach an image to an
+| item, and the images it links to are solid colours, so a look at the device
+| tells which variant, if any, the PSP honours.
+|
+*/
+
+Route::prefix('psp-test')->group(function (): void {
+    Route::get('feed', [PspTestFeedController::class, 'feed'])
+        ->middleware(ForcePspFeedHeaders::class)
+        ->name('psp-test.feed');
+    Route::get('img/{variant}', [PspTestFeedController::class, 'image'])->name('psp-test.image');
+});
