@@ -45,7 +45,9 @@ class CoverController extends Controller
      *
      * The PSP draws an item image only from a JPEG no larger than 160 by 120
      * pixels, so the bytes from the server are re-encoded before they are
-     * served, whatever their original format was.
+     * served, whatever their original format was. When there is no cover the
+     * answer is a 404, so the device draws its own default item icon rather
+     * than a blank frame.
      */
     public function thumb(CoverRequest $request): Response
     {
@@ -56,7 +58,7 @@ class CoverController extends Controller
             : null;
 
         if ($jpeg === null) {
-            return $this->jpegPlaceholder();
+            abort(404);
         }
 
         return $this->image($jpeg, 'image/jpeg');
@@ -67,14 +69,6 @@ class CoverController extends Controller
         return $this->image(
             base64_decode('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', true) ?: '',
             'image/gif',
-        );
-    }
-
-    private function jpegPlaceholder(): Response
-    {
-        return $this->image(
-            base64_decode('/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AVN//2Q==', true) ?: '',
-            'image/jpeg',
         );
     }
 

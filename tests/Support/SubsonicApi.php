@@ -68,9 +68,13 @@ final class SubsonicApi
     public static array $audioHeaders = ['Accept-Ranges' => 'bytes'];
 
     /**
-     * A one pixel transparent GIF, used as the artwork placeholder.
+     * A one pixel transparent GIF, returned as the artwork of every album.
+     *
+     * It has to be a real, decodable image: the feed thumbnail path re-encodes
+     * the artwork, so a malformed fixture would silently fall through to the
+     * "no artwork" branch and never exercise the re-encoding.
      */
-    public const string COVER_BYTES = "\x47\x49\x46\x89\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xff\xff\xff\x21\xf9\x04\x01\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x44\x01\x00\x3b";
+    public const string COVER_BYTES = "\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xff\xff\xff\x21\xf9\x04\x01\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x44\x01\x00\x3b";
 
     /**
      * Install the fake and load the given library.
@@ -301,7 +305,7 @@ final class SubsonicApi
             ]),
             'getPlaylist' => self::one(self::$playlists, (string) ($query['id'] ?? ''), 'playlist'),
             'getSong' => self::one(self::$songs, (string) ($query['id'] ?? ''), 'song'),
-            'getCoverArt' => Http::response(self::COVER_BYTES, 200, ['Content-Type' => 'image/gif']),
+            'getCoverArt' => self::coverArt((string) ($query['id'] ?? '')),
             'stream' => self::$audioConnectionLost
                 ? self::connectionLost($request->url())
                 : Http::response(
@@ -364,6 +368,42 @@ final class SubsonicApi
         }
 
         return self::ok(['status' => 'ok', $key => $source[$id]]);
+    }
+
+    /**
+     * Answer getCoverArt for the artwork identifiers the library holds.
+     *
+     * A cover the library does not know is refused, and an unknown cover is
+     * refused the way Navidrome refuses it: an API error carried by an HTTP
+     * 200 whose body is not an image, so the repository reads it as null.
+     */
+    private static function coverArt(string $id): PromiseInterface
+    {
+        if ($id === '' || ! in_array($id, self::knownCovers(), true)) {
+            return self::failure(70, 'Not found: '.$id);
+        }
+
+        return Http::response(self::COVER_BYTES, 200, ['Content-Type' => 'image/gif']);
+    }
+
+    /**
+     * Every artwork identifier referenced by the library.
+     *
+     * @return array<int, string>
+     */
+    private static function knownCovers(): array
+    {
+        $covers = [];
+
+        foreach ([...self::$albums, ...self::$playlists, ...self::$songs] as $payload) {
+            $cover = $payload['coverArt'] ?? null;
+
+            if (is_string($cover) && $cover !== '') {
+                $covers[$cover] = true;
+            }
+        }
+
+        return array_keys($covers);
     }
 
     /**

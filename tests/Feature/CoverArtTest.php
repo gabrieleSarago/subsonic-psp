@@ -54,13 +54,10 @@ it('serves the artwork as a JPEG thumbnail for the feed items', function (): voi
         ->and($height)->toBeLessThanOrEqual(120);
 });
 
-it('answers a neutral JPEG thumbnail when the artwork is missing', function (): void {
+it('answers 404 for a missing cover thumbnail so the PSP draws its own icon', function (): void {
     SubsonicApi::fake();
 
-    $response = $this->get('/covers/al-1/thumb.jpg');
-
-    $response->assertOk();
-    $response->assertHeader('Content-Type', 'image/jpeg');
+    $this->get('/covers/al-1/thumb.jpg')->assertNotFound();
 });
 
 it('rejects a size outside the supported range', function (): void {
