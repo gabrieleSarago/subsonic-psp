@@ -9,10 +9,12 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * A discriminating probe feed for the PSP item icons.
  *
- * Every item isolates one markup variant from the rest, and every thumbnail
- * linked here is a solid colour, so a look at the device tells which variant,
- * if any, the PSP honours. The audio enclosures point nowhere: the feed asks
- * for nothing but a glance at the icons in the item list.
+ * Every item isolates one markup variant from the rest, and the thumbnails
+ * that are meant to be drawn are solid colours, so a look at the device tells
+ * which variant, if any, the PSP honours. The last items ask a second
+ * question: what the PSP draws, if anything, when the thumbnail URL answers
+ * badly. The audio enclosures point nowhere: the feed asks for nothing but a
+ * glance at the icons in the item list.
  *
  * This is debug scaffolding. Delete the routes and this controller once the
  * item icon question is settled.
@@ -110,6 +112,42 @@ final class PspTestFeedController extends Controller
                 'enclosure' => $audio(7),
                 'enclosureLength' => 100000,
             ],
+            [
+                'id' => 'probe-8',
+                'title' => '8 · thumbnail risponde 404',
+                'summary' => 'L\'URL della miniatura non esiste: la PSP ricade sull\'icona di default?',
+                'updated' => $ago(8),
+                'enclosure' => $audio(8),
+                'enclosureLength' => 100000,
+                'thumb' => ['url' => $image('non-esiste.jpg'), 'width' => 160, 'height' => 120],
+            ],
+            [
+                'id' => 'probe-9',
+                'title' => '9 · thumbnail 200 ma HTML',
+                'summary' => 'L\'URL risponde 200 con una pagina HTML invece che con un\'immagine.',
+                'updated' => $ago(9),
+                'enclosure' => $audio(9),
+                'enclosureLength' => 100000,
+                'thumb' => ['url' => route('psp-test.bad', ['kind' => 'html']), 'width' => 160, 'height' => 120],
+            ],
+            [
+                'id' => 'probe-10',
+                'title' => '10 · thumbnail PNG (formato sbagliato)',
+                'summary' => 'L\'URL risponde con una PNG valida e arancione, ma la PSP legge solo JPEG.',
+                'updated' => $ago(10),
+                'enclosure' => $audio(10),
+                'enclosureLength' => 100000,
+                'thumb' => ['url' => route('psp-test.bad', ['kind' => 'png']), 'width' => 160, 'height' => 120],
+            ],
+            [
+                'id' => 'probe-11',
+                'title' => '11 · thumbnail JPEG corrotto',
+                'summary' => 'L\'URL dichiara image/jpeg ma i byte non sono un JPEG valido.',
+                'updated' => $ago(11),
+                'enclosure' => $audio(11),
+                'enclosureLength' => 100000,
+                'thumb' => ['url' => route('psp-test.bad', ['kind' => 'broken']), 'width' => 160, 'height' => 120],
+            ],
         ];
 
         $html = view('feeds.test', [
@@ -141,15 +179,78 @@ final class PspTestFeedController extends Controller
             abort(404);
         }
 
-        [$width, $height, [$red, $green, $blue], $label] = $spec;
+        [$width, $height, $rgb, $label] = $spec;
 
+        $canvas = $this->canvas($width, $height, $rgb, $label);
+
+        ob_start();
+        imagejpeg($canvas, null, 90);
+        $jpeg = (string) ob_get_clean();
+
+        return response($jpeg, 200, [
+            'Content-Type' => 'image/jpeg',
+            'Content-Length' => (string) strlen($jpeg),
+            'Cache-Control' => 'no-cache',
+        ]);
+    }
+
+    /**
+     * Answer the failure probe with a deliberately unusable thumbnail.
+     *
+     * Each kind answers badly in a different way, so the device shows its hand
+     * on the two questions that matter: does a bad response fall back to the
+     * default icon, and does it draw a broken frame?
+     */
+    public function bad(string $kind): Response
+    {
+        if ($kind === 'html') {
+            return response('<html><body>non un\'immagine</body></html>', 200, [
+                'Content-Type' => 'text/html; charset=UTF-8',
+                'Cache-Control' => 'no-cache',
+            ]);
+        }
+
+        if ($kind === 'png') {
+            $canvas = $this->canvas(120, 120, [245, 130, 20], '10');
+
+            ob_start();
+            imagepng($canvas);
+            $png = (string) ob_get_clean();
+
+            return response($png, 200, [
+                'Content-Type' => 'image/png',
+                'Content-Length' => (string) strlen($png),
+                'Cache-Control' => 'no-cache',
+            ]);
+        }
+
+        if ($kind === 'broken') {
+            $bytes = 'this is not a jpeg';
+
+            return response($bytes, 200, [
+                'Content-Type' => 'image/jpeg',
+                'Content-Length' => (string) strlen($bytes),
+                'Cache-Control' => 'no-cache',
+            ]);
+        }
+
+        abort(404);
+    }
+
+    /**
+     * Draw a solid colour image with the variant number printed in its middle.
+     *
+     * @param  array{0: int, 1: int, 2: int}  $rgb
+     */
+    private function canvas(int $width, int $height, array $rgb, string $label): \GdImage
+    {
         $canvas = imagecreatetruecolor($width, $height);
 
         if (! $canvas instanceof \GdImage) {
             abort(500);
         }
 
-        imagefilledrectangle($canvas, 0, 0, $width - 1, $height - 1, imagecolorallocate($canvas, $red, $green, $blue));
+        imagefilledrectangle($canvas, 0, 0, $width - 1, $height - 1, imagecolorallocate($canvas, $rgb[0], $rgb[1], $rgb[2]));
 
         $labelWidth = imagefontwidth(5) * strlen($label);
         $labelHeight = imagefontheight(5);
@@ -162,15 +263,7 @@ final class PspTestFeedController extends Controller
             imagecolorallocate($canvas, 255, 255, 255),
         );
 
-        ob_start();
-        imagejpeg($canvas, null, 90);
-        $jpeg = (string) ob_get_clean();
-
-        return response($jpeg, 200, [
-            'Content-Type' => 'image/jpeg',
-            'Content-Length' => (string) strlen($jpeg),
-            'Cache-Control' => 'no-cache',
-        ]);
+        return $canvas;
     }
 
     /**

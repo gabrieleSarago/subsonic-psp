@@ -104,4 +104,5 @@ Route::prefix('psp-test')->group(function (): void {
         ->middleware(ForcePspFeedHeaders::class)
         ->name('psp-test.feed');
     Route::get('img/{variant}', [PspTestFeedController::class, 'image'])->name('psp-test.image');
+    Route::get('bad/{kind}', [PspTestFeedController::class, 'bad'])->name('psp-test.bad');
 });

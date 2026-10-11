@@ -17,7 +17,7 @@ it('renders one item per variant with the exact markup each one needs', function
 
     $items = feedItems($response);
 
-    expect($items)->toHaveCount(7)
+    expect($items)->toHaveCount(11)
         ->and((string) feedChannel($response)->title)->toBe('Prova icone PSP');
 
     $media = 'http://search.yahoo.com/mrss/';
@@ -65,6 +65,25 @@ it('renders one item per variant with the exact markup each one needs', function
     // 7 - The control item carries no image markup at all.
     expect(isset($items[6]->children($media)->thumbnail[0]))->toBeFalse()
         ->and(isset($items[6]->children($itunes)->image[0]))->toBeFalse();
+
+    // 8 - The URL of the thumbnail answers 404.
+    $thumbnail = $items[7]->children($media)->thumbnail->attributes();
+
+    expect((string) $thumbnail['url'])->toBe(route('psp-test.image', ['variant' => 'non-esiste.jpg']))
+        ->and((string) $thumbnail['width'])->toBe('160')
+        ->and($this->get((string) $thumbnail['url'])->getStatusCode())->toBe(404);
+
+    // 9 - The URL answers 200 with a page, not an image.
+    expect((string) $items[8]->children($media)->thumbnail->attributes()['url'])
+        ->toBe(route('psp-test.bad', ['kind' => 'html']));
+
+    // 10 - The URL answers 200 with a valid PNG, a format the device rejects.
+    expect((string) $items[9]->children($media)->thumbnail->attributes()['url'])
+        ->toBe(route('psp-test.bad', ['kind' => 'png']));
+
+    // 11 - The URL answers 200 with bytes that are not a JPEG.
+    expect((string) $items[10]->children($media)->thumbnail->attributes()['url'])
+        ->toBe(route('psp-test.bad', ['kind' => 'broken']));
 });
 
 it('serves each probe image with its own size and colour', function (
@@ -104,6 +123,28 @@ it('serves each probe image with its own size and colour', function (
 
 it('answers 404 for a probe image that has no variant', function (): void {
     $this->get('/psp-test/img/whatever.jpg')->assertNotFound();
+});
+
+it('answers the failure probe with a page, a PNG and a broken JPEG', function (): void {
+    $response = $this->get('/psp-test/bad/html');
+
+    $response->assertOk();
+    $response->assertHeader('Content-Type', 'text/html; charset=UTF-8');
+    expect(getimagesizefromstring((string) $response->getContent()))->toBeFalse();
+
+    $response = $this->get('/psp-test/bad/png');
+
+    $response->assertOk();
+    $response->assertHeader('Content-Type', 'image/png');
+    expect(getimagesizefromstring((string) $response->getContent())[2])->toBe(IMAGETYPE_PNG);
+
+    $response = $this->get('/psp-test/bad/broken');
+
+    $response->assertOk();
+    $response->assertHeader('Content-Type', 'image/jpeg');
+    expect(getimagesizefromstring((string) $response->getContent()))->toBeFalse();
+
+    $this->get('/psp-test/bad/whatever')->assertNotFound();
 });
 
 it('makes the probe feed reachable from the index page', function (): void {
