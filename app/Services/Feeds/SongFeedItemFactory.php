@@ -12,11 +12,6 @@ use Spatie\Feed\FeedItem;
 final class SongFeedItemFactory
 {
     /**
-     * Size of the cover linked from an item and advertised as the feed image.
-     */
-    private const int COVER_SIZE = 240;
-
-    /**
      * The bitrate Navidrome is asked to transcode to, used to estimate the size
      * of the MP3 the PSP will receive for a non-MP3 source.
      */
@@ -44,15 +39,15 @@ final class SongFeedItemFactory
             'summary' => $this->summary($song),
             'updated' => $song->created,
             // The item is the track itself, so following the link leads to the
-            // audio. The artwork is carried by the image field, which is where
-            // a reader looks for it.
+            // audio. The artwork is carried by the image field, which is
+            // emitted as the <media:thumbnail> the PSP draws next to the item.
             'link' => $audio,
             'authorName' => $song->artist,
             'authorEmail' => '',
             'enclosure' => $audio,
             'enclosureLength' => $this->length($song),
             'enclosureType' => 'audio/mpeg',
-            'image' => $this->urls->cover($song->coverArt, self::COVER_SIZE) ?? '',
+            'image' => $this->urls->coverThumb($song->coverArt) ?? '',
             'category' => $song->album === '' ? [] : [$song->album],
         ]);
     }

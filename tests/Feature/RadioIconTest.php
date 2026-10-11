@@ -4,7 +4,23 @@ use Illuminate\Support\Facades\Http;
 use Tests\Support\Radios;
 use Tests\Support\SubsonicApi;
 
-it('proxies the favicon bytes of a station', function (): void {
+/**
+ * A tiny PNG the proxy is asked for, real enough for the thumbnailer to
+ * decode it back into a JPEG.
+ */
+function faviconFixture(): string
+{
+    $canvas = imagecreatetruecolor(64, 48);
+    imagefilledrectangle($canvas, 0, 0, 63, 47, imagecolorallocate($canvas, 10, 120, 200));
+
+    ob_start();
+    imagepng($canvas);
+    $bytes = ob_get_clean();
+
+    return (string) $bytes;
+}
+
+it('serves the favicon of a station as a JPEG thumbnail', function (): void {
     Radios::file([[
         'id' => 'rmc',
         'name' => 'RMC',
@@ -13,17 +29,20 @@ it('proxies the favicon bytes of a station', function (): void {
     ]]);
 
     Http::fake([
-        'http://cdn.test/logo.png' => Http::response('PNG-BYTES', 200, ['Content-Type' => 'image/png']),
+        'http://cdn.test/logo.png' => Http::response(faviconFixture(), 200, ['Content-Type' => 'image/png']),
     ]);
 
     $response = $this->get('/radios/rmc/icon');
 
     $response->assertOk();
-    $response->assertHeader('Content-Type', 'image/png');
+    $response->assertHeader('Content-Type', 'image/jpeg');
 
     expect($response->headers->get('Cache-Control'))->toContain('max-age=604800');
 
-    expect($response->getContent())->toBe('PNG-BYTES');
+    [$width, $height] = getimagesizefromstring((string) $response->getContent());
+
+    expect($width)->toBeLessThanOrEqual(160)
+        ->and($height)->toBeLessThanOrEqual(120);
 });
 
 it('serves a neutral pixel when the station has no favicon', function (): void {
@@ -32,7 +51,7 @@ it('serves a neutral pixel when the station has no favicon', function (): void {
     $response = $this->get('/radios/rmc/icon');
 
     $response->assertOk();
-    $response->assertHeader('Content-Type', 'image/gif');
+    $response->assertHeader('Content-Type', 'image/jpeg');
 });
 
 it('serves the neutral pixel when the remote answer is not an image', function (): void {
@@ -50,7 +69,7 @@ it('serves the neutral pixel when the remote answer is not an image', function (
     $response = $this->get('/radios/rmc/icon');
 
     $response->assertOk();
-    $response->assertHeader('Content-Type', 'image/gif');
+    $response->assertHeader('Content-Type', 'image/jpeg');
 });
 
 it('serves the neutral pixel for a station that is not in the list', function (): void {
@@ -59,7 +78,7 @@ it('serves the neutral pixel for a station that is not in the list', function ()
     $response = $this->get('/radios/assente/icon');
 
     $response->assertOk();
-    $response->assertHeader('Content-Type', 'image/gif');
+    $response->assertHeader('Content-Type', 'image/jpeg');
 });
 
 it('never links the remote image directly from the index page', function (): void {

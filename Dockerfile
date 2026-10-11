@@ -32,12 +32,14 @@ RUN composer install \
 FROM dunglas/frankenphp:php8.5-bookworm AS app
 
 # The base image already carries curl, mbstring, the XML extensions and the
-# SQLite driver. Only the ones this application does not have are added.
+# SQLite driver. Only the ones this application does not have are added: GD
+# decodes and re-encodes the thumbnails the PSP displays next to feed items.
 RUN install-php-extensions \
     intl \
     opcache \
     pcntl \
     zip \
+    gd \
     && rm -rf /tmp/*
 
 # The radio section transcodes every station to MP3 in real time with ffmpeg,

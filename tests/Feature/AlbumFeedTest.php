@@ -20,6 +20,15 @@ it('serves an album feed with an enclosure per track', function (): void {
     expect($enclosures[0]['url'])->toMatch('#^http://localhost:8000/audio/sg-1\?v=[a-f0-9]{12}$#')
         ->and($enclosures[0]['length'])->toBe('1000000')
         ->and($enclosures[0]['type'])->toBe('audio/mpeg');
+
+    // The item image is the thumbnail the PSP draws next to the track, not the
+    // cover of the channel.
+    $media = 'http://search.yahoo.com/mrss/';
+    $thumbnail = feedItems($response)[0]->children($media)->thumbnail->attributes();
+
+    expect((string) $thumbnail['url'])->toBe(route('covers.thumb', ['cover' => 'al-1']))
+        ->and((string) $thumbnail['width'])->toBe('160')
+        ->and((string) $thumbnail['height'])->toBe('120');
 });
 
 it('never puts the Navidrome credentials in the feed', function (): void {
@@ -30,7 +39,10 @@ it('never puts the Navidrome credentials in the feed', function (): void {
     expect($body)
         ->not->toContain('s3cret')
         ->not->toContain('navidrome.test')
-        ->not->toContain('t=');
+        // The new item thumbnail carries a height attribute, whose "t=" would
+        // trip a plain substring search, so the credentials are looked for as
+        // a token in the query string only.
+        ->not->toMatch('#[?&]t=#');
 });
 
 it('writes dates as RFC 822 in GMT', function (): void {

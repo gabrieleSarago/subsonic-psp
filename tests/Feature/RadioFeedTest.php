@@ -46,6 +46,17 @@ it('serves the stations as a feed with a live enclosure each', function (): void
         ->and($enclosures[0]['length'])->toBe('')
         ->and($enclosures[0]['type'])->toBe('audio/mpeg')
         ->and((string) $items[1]->description)->toBe('');
+
+    // The PSP draws an item image only from a <media:thumbnail> element, so
+    // every station must carry one pointing at its proxied favicon.
+    $media = 'http://search.yahoo.com/mrss/';
+    $thumbnail = $items[0]->children($media)->thumbnail->attributes();
+
+    expect((string) $thumbnail['url'])->toBe(route('radios.icon.show', ['station' => 'rmc']))
+        ->and((string) $thumbnail['width'])->toBe('160')
+        ->and((string) $thumbnail['height'])->toBe('120')
+        ->and((string) $items[1]->children($media)->thumbnail->attributes()['url'])
+        ->toBe(route('radios.icon.show', ['station' => 'kiss']));
 });
 
 it('names a station without a name after its host', function (): void {

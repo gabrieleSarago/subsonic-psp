@@ -40,6 +40,29 @@ it('answers a neutral image rather than an error when the artwork is missing', f
     $response->assertHeader('Content-Type', 'image/gif');
 });
 
+it('serves the artwork as a JPEG thumbnail for the feed items', function (): void {
+    SubsonicApi::fake(albums: [SubsonicApi::album(SubsonicApi::songs(1))]);
+
+    $response = $this->get('/covers/al-1/thumb');
+
+    $response->assertOk();
+    $response->assertHeader('Content-Type', 'image/jpeg');
+
+    [$width, $height] = getimagesizefromstring((string) $response->getContent());
+
+    expect($width)->toBeLessThanOrEqual(160)
+        ->and($height)->toBeLessThanOrEqual(120);
+});
+
+it('answers a neutral JPEG thumbnail when the artwork is missing', function (): void {
+    SubsonicApi::fake();
+
+    $response = $this->get('/covers/al-1/thumb');
+
+    $response->assertOk();
+    $response->assertHeader('Content-Type', 'image/jpeg');
+});
+
 it('rejects a size outside the supported range', function (): void {
     SubsonicApi::fake();
 

@@ -64,7 +64,8 @@ Route::prefix('feeds')
 
 Route::get('audio/{song}', [AudioStreamController::class, 'show'])->name('audio.show');
 Route::get('covers/{cover}', [CoverController::class, 'show'])->name('covers.show');
-Route::get('covers/{cover}/{size}', [CoverController::class, 'show'])->name('covers.show.sized');
+Route::get('covers/{cover}/thumb', [CoverController::class, 'thumb'])->name('covers.thumb');
+Route::get('covers/{cover}/{size}', [CoverController::class, 'show'])->where('size', '[0-9]+')->name('covers.show.sized');
 
 /*
 |--------------------------------------------------------------------------

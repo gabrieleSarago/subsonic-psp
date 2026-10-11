@@ -45,6 +45,22 @@ final class PspUrls
     }
 
     /**
+     * The proxy URL of a cover thumbnail, or null when there is no artwork.
+     *
+     * The PSP draws an item image only from a JPEG no larger than 160 by 120
+     * pixels, and this endpoint serves exactly that, so feed items link here
+     * rather than to the sized cover above.
+     */
+    public function coverThumb(?string $coverArtId): ?string
+    {
+        if ($coverArtId === null || $coverArtId === '') {
+            return null;
+        }
+
+        return route('covers.thumb', ['cover' => $coverArtId]);
+    }
+
+    /**
      * The feed URL of an album. The first part has a shorter URL.
      */
     public function albumFeed(string $albumId, int $part = 1): string

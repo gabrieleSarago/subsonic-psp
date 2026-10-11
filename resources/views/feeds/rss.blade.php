@@ -5,6 +5,10 @@
     an <enclosure> element. The PSP downloads the audio of an item from that
     element, so a feed without it is a feed with no music.
 
+    The PSP draws an item image only from a <media:thumbnail> element inside the
+    item, so every item that carries one is given it here under the Media RSS
+    namespace.
+
     Every field of a feed item is read through a null coalescing default.
     Spatie\Feed\FeedItem declares typed properties without a default value and
     throws when one that was never assigned is read, while "isset" and "??" stay
@@ -22,7 +26,7 @@
         ->first() ?? now();
 @endphp
 <?= '<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
     <channel>
         <atom:link href="{{ url($meta['link']) }}" rel="self" type="application/rss+xml" />
         <title>{{ $meta['title'] }}</title>
@@ -54,6 +58,9 @@
 @if (($item->enclosure ?? '') !== '')
             @php($enclosureLength = (int) ($item->enclosureLength ?? 0))
             <enclosure url="{{ $item->enclosure }}"@if ($enclosureLength > 0) length="{{ $enclosureLength }}"@endif type="{{ $item->enclosureType ?? 'audio/mpeg' }}" />
+@endif
+@if (($item->image ?? '') !== '')
+            <media:thumbnail url="{{ $item->image }}" width="160" height="120" />
 @endif
         </item>
 @endforeach
